@@ -1,0 +1,18 @@
+NIK
+Nama
+Jabatan
+Dept
+Cabang dan Lokasi
+Atasan
+Tanggal bergabung
+
+2211182		2549
+Febri Surya R 	FEBRI SURYA R	febri.s
+Staff GA
+GA	46	21
+Jakarta Japan 12 	1000000	5
+Cahaya	444
+1 Oktober 2022
+
+iqbal panji
+muhamad fiqih

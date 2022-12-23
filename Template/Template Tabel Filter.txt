@@ -1,0 +1,67 @@
+<?php $form = ActiveForm::begin(); ?>
+		  <table>
+			<tr>
+			  <td width="100">Cabang</td>
+			  <td width="300">
+			  
+			  
+				<?php
+				    
+ 						echo Select2::widget([
+							'name' => 'id_cabang',
+							'data' => getListCabang(),
+							'options' => [
+								'placeholder' => 'nama cabang',
+								'multiple' => false
+							],
+						]);  
+				?>	  
+  
+			  </td>
+			  <td width="20"></td>
+			  <td width="100">start</td>
+			  <td width="300">
+				<?php
+					echo DatePicker::widget([
+						'name' => 'awal',
+						'value' => $awal,
+						'type' => DatePicker::TYPE_COMPONENT_PREPEND,
+						'pluginOptions' => [
+							'autoclose'=>true,
+							'format' => 'yyyy-mm-dd'
+						]
+					]);
+				?> 
+			  </td>
+			</tr>
+			<tr>
+			  <td width="100">Nama Gudang</td>
+			  <td width="300">
+			<?php
+				    
+ 						echo Select2::widget([
+							'name' => 'id_gudang',
+							'data' => getListGudang(),
+							'options' => [
+								'placeholder' => 'nama gudang',
+								'multiple' => false
+							],
+						]);  
+				?>	
+			  </td>
+			  <td width="20"></td>
+			  <td width="100">end</td>
+			  <td width="300">
+				<?php
+					echo DatePicker::widget([
+						'name' => 'akhir',
+						'value' => $akhir,
+						'type' => DatePicker::TYPE_COMPONENT_PREPEND,
+						'pluginOptions' => [
+							'autoclose'=>true,
+							'format' => 'yyyy-mm-dd'
+						]
+					]);
+				?>  
+			  </td>
+			</tr>

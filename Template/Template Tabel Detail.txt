@@ -1,0 +1,31 @@
+<table style="border: 1px solid black;">
+<tbody>
+<tr>
+<td style="background-color: #0d6efd; border: 1px solid black; height: 56px; width: 776.354px; text-align: center;" colspan="3" width="661">
+<h3 style="color: white; text-align: center;"><strong>Produk Range</strong></h3>
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 5px;">
+<p><strong>Kode Barang</strong></p>
+</td>
+<td style="border: 1px solid black; padding: 5px;">
+<p><strong>Kategori Produk</strong></p>
+</td>
+<td style="padding: 5px; border: 1px solid black;">
+<p><strong>Kemasan Sterilisasi</strong></p>
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 5px;">
+<p>R-325278-KIIT</p>
+</td>
+<td style="border: 1px solid black; padding: 5px;">
+<p>Glukose Test System<br />NIPRO PREMIER S BLOOD GLUCOSE<br />MONITORING SYSTEM GM01|AA</p>
+</td>
+<td style="border: 1px solid black; padding: 5px;">
+<p>Unit</p>
+</td>
+</tr>
+</tbody>
+</table>

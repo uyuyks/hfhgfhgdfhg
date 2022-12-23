@@ -1,0 +1,14 @@
+http://10.10.20.231:2020/sirup/pengajuan_dana/proposalanggaran/biayaupdate?id=120734
+
+
+SELECT 
+m.coa, SUM(r.jumlah) AS total, r.nama_biaya
+FROM db_pengajuan_dana.rincian_biaya AS r
+
+LEFT JOIN db_pengajuan_dana.master_biaya AS m ON r.id_biaya = m.id
+LEFT JOIN db_pengajuan_dana.pengajuan AS p ON r.id_pengajuan = p.id_pengajuan
+
+WHERE 
+p.tanggal BETWEEN '2022-10-01' AND '2022-10-31'
+AND m.id = '22'
+

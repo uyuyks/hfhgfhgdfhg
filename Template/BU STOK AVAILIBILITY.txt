@@ -1,0 +1,28 @@
+else{
+					$kate="'AV-FISTULA','BICARBONATE POWDER','BLOOD TUBING SET','DESINFEKTAN','DIALYSATE SOLUTION ACID','DIALYSATE SOLUTION BICARBONATE','HD PACK','HOLOW FIBER / DIALYZER','INFUSION SET'";
+				}
+				
+				
+				
+else{
+					$b="'HD'";
+				}
+				
+			<?	
+				/* 					  $list2 = str_replace("'","",$bu);
+					  $jmlchar = strlen($list2);
+					  $list = substr($list2,0,$jmlchar);
+					  $str_arr = explode (",", $list); 
+
+                      var_dump($str_arr);					  
+					  
+ 						echo Select2::widget([
+							'name' => 'bu',
+							'value' => $str_arr,
+							'data' => getBU(),
+							'options' => [
+								'placeholder' => 'Bussines Unit',
+								'multiple' => true
+							],
+						]);  */
+						?>

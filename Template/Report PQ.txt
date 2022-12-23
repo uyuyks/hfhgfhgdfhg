@@ -1,0 +1,109 @@
+
+				SELECT  
+				 	a.[Document Date] AS tgl_pq,
+					a.[Order Date] AS tgl_orderr,
+					a.[Pay-to Vendor No_] AS no_vendorr,
+					a.[Pay-to Name] AS nm_vendor,
+					a.No_ AS no_pq,
+					a.[Expected Receipt Date] AS recept_datee,
+					h.[Line No_] AS linesatu,
+					h.No_ AS no_itemm,
+					h.Description AS itemm, 
+					h.[Unit of Measure] AS unitt,
+					h.Quantity AS Quantity, 
+					h.[Quantity Invoiced] as qty_i,
+					j.[Line No_] AS linedua,
+					j.Quantity AS terima,
+					g.[Document Date] AS tgl_pq,
+					g.[Order Date] AS tgl_orderr,
+					g.[Pay-to Vendor No_] AS no_vendorr,
+					g.[Pay-to Name] AS nm_vendor,
+					g.No_ AS no_po,
+					g.[Expected Receipt Date] AS recept_datee,
+					f.[Line No_] AS linetiga,
+					f.No_ AS no_itemm,
+					f.Description AS itemm, 
+					f.[Unit of Measure] AS unitt,
+					f.Quantity AS Qty, 
+					f.[Quantity Invoiced] as qty_ii,
+					j.[Line No_] AS lineempat,
+					j.Quantity AS terimaa,
+					b.[Document Date] AS tgl_pr,
+					b.[Order Date] AS tgl_orderrrr,
+					b.[Pay-to Vendor No_] AS no_vendorrrr,
+					b.[Pay-to Name] AS nm_vendorrrr,b.No_ AS no_pr,
+					b.[Expected Receipt Date] AS recept_dater,
+					i.[Line No_] AS linelima,
+					i.No_ AS no_itemr,
+					i.Description AS itemr, 
+					i.[Unit of Measure] AS unitr,
+					i.Quantity AS Qtyr, 
+					i.[Quantity Invoiced] as qty_iii,
+					j.[Line No_] AS lineenam,
+					j.Quantity AS terimaaa
+				FROM 
+				dbo."PT_ SINAR RODA UTAMA$Purchase Header Archive" AS a 
+				LEFT JOIN dbo."PT_ SINAR RODA UTAMA$Purchase Line Archive" AS h
+				ON a.[No_] = h.[Document No_]
+				
+				LEFT join
+				dbo."PT_ SINAR RODA UTAMA$Purchase Header" AS g
+				ON g.[Quote No_] = a.[No_] 
+				
+				LEFT JOIN 
+				dbo."PT_ SINAR RODA UTAMA$Purch_ Rcpt_ Header" AS b
+				ON g.[Last Receiving No_] = b.[No_]
+				
+				LEFT JOIN 
+				dbo."PT_ SINAR RODA UTAMA$Purch_ Rcpt_ Line" AS i
+				ON b.[No_] = i.[Document No_]
+				
+				LEFT JOIN
+				(SELECT [Document No_], [Receipt No_],
+				SUM([Amount Including VAT]) AS Amount
+				FROM
+				dbo."PT_ SINAR RODA UTAMA$Purch_ Inv_ Line"
+				WHERE 
+				Quantity <> 0
+				GROUP BY 
+				[Document No_], [Receipt No_]) AS c
+				ON c.[Receipt No_] = b.No_
+				LEFT JOIN 
+				dbo."PT_ SINAR RODA UTAMA$Purch_ Inv_ Header" AS d
+				ON d.No_ = c.[Document No_]
+				LEFT JOIN 
+				dbo."PT_ SINAR RODA UTAMA$Purch_ Cr_ Memo Hdr_" AS e
+				ON d.No_ = e.[Applies-to Doc_ No_]
+				LEFT JOIN 
+				dbo."PT_ SINAR RODA UTAMA$Purchase Line" AS f
+				ON g.[No_] = f.[Document No_]
+				
+				LEFT JOIN 
+					(SELECT  
+					[Line No_], [Order No_],[No_],
+					SUM(Quantity) AS Quantity
+
+					FROM 
+					dbo."PT_ SINAR RODA UTAMA$Purch_ Rcpt_ Line"
+					WHERE
+					Correction = 0
+					AND Quantity <> 0
+					AND [Posting Date] <='2022-04-30 00:00:00.000'
+					AND [Order No_] <> '' 
+
+					GROUP BY 
+					[Order No_],[Line No_],[No_]
+
+
+					)
+					AS j 
+					ON j.[Order No_] = h.[Document No_] and j.[Line No_] = h.[Line No_] AND j.[No_] = h.[No_]
+				
+				WHERE
+				a.No_ LIKE '%PQ%'
+				AND e.No_ IS NULL 
+				AND a.[Order Date] BETWEEN '2022-05-01 00:00:00.000' AND '2022-05-31 00:00:00.000'
+	
+					
+				ORDER BY
+				a.[Order Date] Asc, a.No_ ASC

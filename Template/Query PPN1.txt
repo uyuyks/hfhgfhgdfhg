@@ -1,0 +1,40 @@
+select 
+  a.id_pesanan, 
+  if (
+    a.tipe_bayar = 'SUBDEALER', 
+    substr(a.no_fak, 12), 
+    substr(a.no_fak, 12)
+  ) as no_fak, 
+  a.tipe_bayar, 
+  b.nama as nama_customer, 
+  if (d.nama is not null, d.nama, 'CASH') AS mekanik, 
+  e.nama as nama_kasir, 
+  a.tanggal_dok, 
+  a.tanggal_service, 
+  if(g.tipe = 2, g.nama, g.kode_produk) as produk, 
+  a.catatan, 
+  round(f.biaya, 0) as biaya, 
+  ROUND (f.dpp, 0) as dpp, 
+  ROUND (f.ppn) AS ppn,
+  f.total,
+  (f.total - round (f.ppn)) AS dpp2,
+  if(g.tipe = 2, NULL, f.qty) as qty 
+from 
+  srkm.pesanan a 
+  left join srkm.m_customer b on a.id_customer_kirim = b.id_customer 
+  left join srkm.m_customer_address c on a.id_address_kirim = c.id_address 
+  left join srkm.m_user d on a.mekanik = d.id 
+  left join srkm.m_user e on a.kasir = e.id 
+  left JOIN srkm.pesanan_detail f on a.id_pesanan = f.id_pesanan 
+  left join srkm.m_product g on f.id_produk = g.id_produk 
+where 
+  a.status_ps = 'COMPLETED' 
+  and a.tanggal_service between '2022-05-09' 
+  and '2022-05-09' 
+  and a.org_id = 'HW' 
+  and a.tipe_bayar != 'SUBDEALER' 
+order by 
+  g.tipe desc, 
+  g.kode_produk asc, 
+  g.nama asc, 
+  a.tanggal_service ASC

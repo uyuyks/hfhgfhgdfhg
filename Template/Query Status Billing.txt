@@ -1,0 +1,143 @@
+SELECT 
+	a.[Entry No_] as no_entry,
+	a.[User ID] AS id_user, /*a.[Sell-to Customer No_] AS no_cust,*/ 
+	
+	customer.No_ as cust_no,
+	customer.Name as customer,
+	/* h.[Bill-to Customer No_] AS cust_no,h.[Bill-to Name] AS customer, gak jadi*/
+	
+	tertagih.No_ as tertagih_no,
+	tertagih.[Name] as tertagih, 
+	a.[External Document No_] AS eksternal, 
+	a.[Global Dimension 1 Code], 
+	CASE WHEN a.[Bal_ Account No_] = '10021001' THEN a.[Sales (LCY)] ELSE a.[Sales (LCY)]*1.1 END AS jumlah, 
+	g.Amount AS jumlah2, 
+	k.[No_],k.[Transaction Type],
+	CASE WHEN e.Amount is NULL THEN 0 ELSE e.Amount END AS pembayaran, 
+	CASE 
+		WHEN f.[E-Faktur Register Mapping ID] = 'EFID0001' THEN '010.'+ f.[Faktur Pajak No_] 
+		WHEN f.[E-Faktur Register Mapping ID] = 'EFID0002' THEN '020.'+ f.[Faktur Pajak No_] 
+		WHEN f.[E-Faktur Register Mapping ID] = 'EFID0003' THEN '030.'+ f.[Faktur Pajak No_] 
+		WHEN f.[E-Faktur Register Mapping ID] = 'EFID0004' THEN '040.'+ f.[Faktur Pajak No_] ELSE f.[Faktur Pajak No_] END AS fp, 
+	/*d.Name AS nama_cust, */ a.[Global Dimension 1 Code] as cabangs, 
+	a.[Document No_] AS no_faktur, 
+	a.[Due Date] AS jatuh_tempo, 
+	DATEDIFF( DAY,a.[Posting Date] , 
+	GETDATE() ) AS selisih, 
+	a.[Sales (LCY)], 
+	a.[Salesperson Code], 
+	c.Name AS sales, 
+	a.[Posting Date] AS tgl_faktur2,
+	iif(a.[Document No_] LIKE 'OAR%',a.[Document Date],a.[Posting Date]) AS tgl_faktur,
+	
+	(SELECT
+			[Dimension Value Code] as rm
+				FROM dbo.[PT_ SINAR RODA UTAMA$Dimension Set Entry]
+					WHERE [Dimension Code] = 'SALES-RM' and [Dimension Set ID] = a.[Dimension Set ID]
+	) AS RM,
+	(SELECT
+			[Dimension Value Code]
+				FROM dbo.[PT_ SINAR RODA UTAMA$Dimension Set Entry]
+					WHERE [Dimension Code] = 'CABANG' and [Dimension Set ID] = a.[Dimension Set ID]
+	) AS cabang,
+	(SELECT
+			[Dimension Value Code]
+				FROM dbo.[PT_ SINAR RODA UTAMA$Dimension Set Entry]
+					WHERE [Dimension Code] = 'CUSTOMER' and [Dimension Set ID] = a.[Dimension Set ID]
+	) AS customer_code,
+	(SELECT
+			[Dimension Value Code] 
+				FROM dbo.[PT_ SINAR RODA UTAMA$Dimension Set Entry]
+					WHERE [Dimension Code] = 'CUST-CAT' and [Dimension Set ID] = a.[Dimension Set ID]
+	) AS cust_cat,
+	(SELECT
+			[Dimension Value Code]
+				FROM dbo.[PT_ SINAR RODA UTAMA$Dimension Set Entry]
+					WHERE [Dimension Code] = 'SALES-AREA' and [Dimension Set ID] = a.[Dimension Set ID]
+	) AS sales_area,
+	(SELECT
+			[Dimension Value Code]
+				FROM dbo.[PT_ SINAR RODA UTAMA$Dimension Set Entry]
+					WHERE [Dimension Code] = 'SALES-CAT' and [Dimension Set ID] = a.[Dimension Set ID]
+	) AS sales_cat,
+	(SELECT
+			SUBSTRING([Dimension Value Code], 5, 3) + '.' + f.[Faktur Pajak No_]
+				FROM dbo.[PT_ SINAR RODA UTAMA$Dimension Set Entry]
+					WHERE [Dimension Code] = 'SALES-CAT' and [Dimension Set ID] = a.[Dimension Set ID]
+	) AS faktur_pajak,
+	b.[Dimension Value Code]
+	
+	
+	
+		FROM dbo.[PT_ SINAR RODA UTAMA$Cust_ Ledger Entry] AS a 
+			LEFT JOIN dbo.[PT_ SINAR RODA UTAMA$Dimension Set Entry] AS b ON a.[Dimension Set ID] = b.[Dimension Set ID] 
+			LEFT JOIN dbo.[PT_ SINAR RODA UTAMA$Salesperson_Purchaser] AS c ON c.Code = a.[Salesperson Code] 
+			
+			 LEFT JOIN ( SELECT [Billing Name] as Name,No_ FROM dbo.[PT_ SINAR RODA UTAMA$Customer] ) AS customer 
+			ON customer.No_ = a.[Customer No_]  /*disini*/ 
+			
+			LEFT JOIN( SELECT Name,No_ FROM dbo.[PT_ SINAR RODA UTAMA$Customer] ) as tertagih on tertagih.No_ = a.[Sell-to Customer No_] 
+			LEFT JOIN ( 
+				SELECT Sum(Amount) AS Amount,[Cust_ Ledger Entry No_] FROM dbo.[PT_ SINAR RODA UTAMA$Detailed Cust_ Ledg_ Entry] 
+					WHERE [Entry Type] = 2 GROUP BY [Cust_ Ledger Entry No_] 
+			) AS e ON e.[Cust_ Ledger Entry No_] = a.[Entry No_] 
+			LEFT JOIN dbo.[PT_ SINAR RODA UTAMA$E-Faktur_Register Header] AS f ON f.No_=a.[Document No_] 
+			LEFT JOIN ( 
+				SELECT Sum(Amount) AS Amount,[Cust_ Ledger Entry No_] 
+					FROM dbo.[PT_ SINAR RODA UTAMA$Detailed Cust_ Ledg_ Entry]
+						WHERE [Entry Type] = 1 GROUP BY [Cust_ Ledger Entry No_] 
+			) AS g ON g.[Cust_ Ledger Entry No_] = a.[Entry No_] 
+			
+			
+			LEFT JOIN 
+			dbo.[PT_ SINAR RODA UTAMA$Sales Invoice Header] AS h
+			ON h.No_ = a.[Document No_]
+			left JOIN
+			(SELECT [Document No_],max([Shipment No_]) AS [Shipment No_]
+			FROM 
+			dbo.[PT_ SINAR RODA UTAMA$Sales Invoice Line]
+			GROUP BY [Document No_]
+			) AS i 
+			ON
+			h.No_ = i.[Document No_]
+			left join 
+			(select distinct(ssl.[Document No_]),ssl.[Order No_] 
+			from 
+			dbo.[PT_ SINAR RODA UTAMA$Sales Shipment Line] as ssl) as j on
+			j.[Document No_] = i.[Shipment No_]
+
+			left join
+			dbo.[PT_ SINAR RODA UTAMA$Sales Header] as k on
+			j.[Order No_] = k.[No_]
+			
+			
+			
+			
+			WHERE 
+				( 
+					a.[Document Type] = 2 OR a.[Document Type] = 0 
+				) 
+				AND a.[Open] = 1 AND a.[Sell-to Customer No_] not in ('PAK002625','PAK001266','PAK001267') 
+				AND a.[Customer No_] not in ('PAK002625','PAK001266','PAK001267') AND g.Amount > 0 
+				AND (isnull(h.[Payment Method Code],'NULL') in ('','BANK','CASH','NULL') or a.[Document No_] like 'OAR%')
+				AND tertagih.Name = 'RS ANANDA BABELAN'
+								
+				
+			/*	and RM. IN('RM01','RM02','RM03','RM04','RM05','RM06','RM07','RM08','RM09','RM10','RM11','RM12','RM13','RM14','RM15','RM16','NON RM')  
+				*/
+				
+					GROUP BY 
+					a.[Entry No_],
+					b.[Dimension Value Code],a.[Dimension Set ID],
+					k.[No_],k.[Transaction Type],
+					a.[Bal_ Account No_], e.Amount,a.[External Document No_], g.Amount,
+					f.[E-Faktur Register Mapping ID], a.[User ID], a.[Sell-to Customer No_], 
+					a.[Document No_], a.[Sales (LCY)], a.[Salesperson Code], c.Name, a.[Due Date],a.[Posting Date], 
+					f.[Faktur Pajak No_] , a.[Global Dimension 1 Code], 
+					
+					customer.No_,customer.Name,
+					/*h.[Bill-to Customer No_],h.[Bill-to Name],	gak jadi*/		
+					tertagih.No_,tertagih.Name,a.[Document Date]
+					
+					
+					ORDER BY a.[Posting Date] DESC

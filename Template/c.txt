@@ -1,0 +1,11 @@
+ISI KOLOM LAPORAN LOOPING
+<?php if(getLaporan($x,$row['id_periode'],$row['id_cabang'], $row['id_gudang'], $row['total_nilai'])==""){ ?>
+				     <td></td>
+				  <?php }else{ ?>
+				     <td><a href="http://10.10.20.231:2020/sirup/file/cdakb/<?=getLaporan($x,$row['id_periode'],$row['id_cabang'], $row['id_gudang'], $row['total_nilai'])?>"></a></td>
+				  <?php } ?>
+
+
+SELECT SUM(bobot_penilaian) AS total_nilai FROM db_sirup.cdakb_detail AS d
+						LEFT JOIN db_sirup.cdakb_header AS h ON d.id_cdakb_header = h.id_cdakb_header
+						WHERE h.id_periode = '$id_periode' AND h.id_gudang = '$id_gudang' AND h.id_cabang = '$id_cabang'";	

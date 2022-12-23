@@ -1,0 +1,6 @@
+staff kontrak http://10.10.20.231:2020/sirup/kinerja/cetak2/1
+staff tetap http://10.10.20.231:2020/sirup/kinerja/cetak2/6
+pic kontrak http://10.10.20.231:2020/sirup/kinerja_pic/print2/84
+pic tetap http://10.10.20.231:2020/sirup/kinerja_pic/print2/1
+manager kontrak  http://10.10.20.231:2020/sirup/kinerja_manajer/print2/48
+manager tetap http://10.10.20.231:2020/sirup/kinerja_manajer/print2/1

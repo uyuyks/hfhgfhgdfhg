@@ -1,0 +1,97 @@
+								SELECT a.[User ID], 
+								a.[Entry No_] as no_entry,
+								a.[Customer No_], 
+								a.[Bal_ Account No_] as balac, 
+								a.[External Document No_] as external_docno,
+								CASE 
+										WHEN a.[Bal_ Account No_] = '10021001' 
+										THEN a.[Sales (LCY)] 
+										ELSE a.[Sales (LCY)]*1.1 
+								END AS jumlah,
+								g.Amount AS jumlah2,
+								e.Amount AS pembayaran, 
+								d.Name, 
+								f.[Faktur Pajak No_],
+								h.[VAT Bus_ Posting Group],
+								CASE 
+									WHEN f.[E-Faktur Register Mapping ID] = 'EFID0001' 
+									   THEN '010.'+ f.[Faktur Pajak No_] 
+									WHEN f.[E-Faktur Register Mapping ID] = 'EFID0002' 
+									   THEN '020.'+ f.[Faktur Pajak No_]
+									WHEN f.[E-Faktur Register Mapping ID] = 'EFID0003' 
+									   THEN '030.'+ f.[Faktur Pajak No_]
+									WHEN f.[E-Faktur Register Mapping ID] = 'EFID0004' 
+									   THEN '040.'+ f.[Faktur Pajak No_]
+							   ELSE f.[Faktur Pajak No_] 
+							   END AS fakpa,
+								a.[Document No_],a.[Due Date], a.[Sales (LCY)], 
+								a.[Salesperson Code], c.Name,a.[Document Date],
+								  max(case WHEN b.[Dimension Code] = 'CABANG' then [Dimension Value Code] end) cabang,
+								  max(case WHEN b.[Dimension Code] = 'CUSTOMER' then [Dimension Value Code] end) customer,
+								  max(case WHEN b.[Dimension Code] = 'CUST-CAT' then [Dimension Value Code] end) cust_cat,
+								  max(case WHEN b.[Dimension Code] = 'SALES-AREA' then [Dimension Value Code] end) sales_area,
+								  max(case WHEN b.[Dimension Code] = 'SALES-CAT' then [Dimension Value Code] end) sales_cat,
+								  max(case WHEN b.[Dimension Code] = 'SALES-RM' then [Dimension Value Code] end) RM,
+								  max(case WHEN b.[Dimension Code] = 'SALES-CAT' then (SUBSTRING([Dimension Value Code], 5, 3) + '.' + f.[Faktur Pajak No_])  end) faktur_pajak
+								
+								
+								FROM 
+								SRU_Live.dbo.[PT_ SINAR RODA UTAMA$Cust_ Ledger Entry] AS a
+								LEFT JOIN 
+								SRU_Live.dbo.[PT_ SINAR RODA UTAMA$Dimension Set Entry] AS b
+								ON a.[Dimension Set ID] = b.[Dimension Set ID]
+								LEFT JOIN
+								SRU_Live.dbo.[PT_ SINAR RODA UTAMA$Salesperson_Purchaser] AS c
+								ON c.Code = a.[Salesperson Code]
+								LEFT JOIN 
+								SRU_Live.dbo.[PT_ SINAR RODA UTAMA$Customer] AS d
+								ON 
+								d.No_ = a.[Customer No_]
+								LEFT JOIN
+								(SELECT Sum(Amount) AS Amount,[Cust_ Ledger Entry No_] FROM  
+								SRU_Live.dbo.[PT_ SINAR RODA UTAMA$Detailed Cust_ Ledg_ Entry]
+								WHERE
+								[Entry Type] = 2
+								GROUP BY
+								[Cust_ Ledger Entry No_]
+								) AS e
+								ON e.[Cust_ Ledger Entry No_] = a.[Entry No_]
+								LEFT JOIN
+								SRU_Live.dbo.[PT_ SINAR RODA UTAMA$E-Faktur_Register Header] AS f
+								ON f.No_=a.[Document No_]
+								LEFT JOIN
+								(SELECT Sum(Amount) AS Amount,[Cust_ Ledger Entry No_] FROM  
+								SRU_Live.dbo.[PT_ SINAR RODA UTAMA$Detailed Cust_ Ledg_ Entry]
+								WHERE
+								[Entry Type] = 1
+								GROUP BY
+								[Cust_ Ledger Entry No_]
+								) AS g
+								ON g.[Cust_ Ledger Entry No_] = a.[Entry No_]
+								LEFT JOIN 
+								SRU_Live.dbo.[PT_ SINAR RODA UTAMA$Sales Invoice Header] AS h
+								ON h.No_ = a.[Document No_]
+								LEFT JOIN 
+								SRU_Live.dbo.[PT_ SINAR RODA UTAMA$Sales Invoice Line] AS i
+								ON i.[Document No_] = h.No_
+								
+								WHERE 
+								(a.[Document Type] = 2 OR a.[Document Type] = 0)
+								AND a.[Open] = 1
+								AND g.Amount > 0
+								AND a.[Sell-to Customer No_] not in  ('PAK002625','PAK001266','PAK001267')
+								AND a.[Customer No_] not in  ('PAK002625','PAK001266','PAK001267')
+								AND (isnull(h.[Payment Method Code],'NULL') in ('','BANK','CASH','NULL') or a.[Document No_] like 'OAR%')
+								AND a.[Document No_] = 'PSI-2205-2185'
+								
+								
+								
+								GROUP BY 
+								f.[E-Faktur Register Mapping ID],a.[Entry No_],
+								a.[Bal_ Account No_],e.Amount,g.Amount,
+								a.[User ID], a.[Customer No_], a.[Document No_], a.[Sales (LCY)],
+								a.[Salesperson Code], c.Name, d.Name,a.[Due Date],a.[Document Date],f.[Faktur Pajak No_], h.[VAT Bus_ Posting Group],
+								a.[External Document No_], a.[Entry No_]
+								
+								ORDER BY a.[Document Date] Asc,
+								a.[External Document No_] Asc

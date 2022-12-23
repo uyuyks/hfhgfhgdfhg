@@ -1,0 +1,16 @@
+$modeldetail = Cdakb_detail::find()->where(['id_cdakb_header'=>$id])->all(); //umtuk memanggil banyak data//
+
+$cek = count($modeldetail);
+
+if($cek==0){
+			foreach($sumber as $sumber){
+				$isi = new Cdakb_detail();
+				$isi->id_cdakb_header = $id;
+				$isi->aspek_cdakb = $sumber['aspek_cdakb'];
+				$isi->kategori = $sumber['kategori'];
+				$isi->aspek_penelitian = $sumber['aspek_penilaian'];
+				$isi->penjelasan_aspek = $sumber['penjelasan'];
+				$isi->bobot = $sumber['bobot'];
+				$isi->save(false);
+			}
+		}

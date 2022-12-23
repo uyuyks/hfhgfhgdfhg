@@ -1,0 +1,26 @@
+PERKUMPULAN CEK MENGECEK
+
+Cek Warehouse
+SELECT * FROM customer_db.erp_kpi_warehouse AS w
+
+ORDER BY w.id DESC LIMIT 3
+
+
+Cek Datecreated Duplicated TAM
+SELECT * FROM work_order
+
+ORDER BY datecreated DESC
+
+LIMIT 10 
+
+
+Cek Data Forecast Double 
+SELECT DISTINCT * , COUNT(*) duplikat  FROM customer_db.erp_kpi_forecast 
+WHERE descr LIKE '%PMMR-SUMBAGSEL%' AND tgl LIKE '%2022-08%'
+GROUP BY no HAVING COUNT(no)  > 1
+
+
+Cek Data Terakhir Karyawan
+SELECT * FROM customer_db.master_karyawan AS mk
+
+ORDER BY mk.Kode_Karyawan DESC LIMIT 3

@@ -1,0 +1,99 @@
+SELECT 
+ile.[Posting Date] as tgl_posting, 
+se.[Dimension Value Code] AS RM, 
+val.[Name] AS sal_area,
+ile.[External Document No_] AS docno,
+sih.No_ AS no_faktur,
+sih.[Sell-to Customer No_] AS kode_cust,
+ssh.[No_] as shipmentno, 
+ctr.[No_] as kodecustomer, 
+ctr.Name as namacustomer,
+ile.[Document No_] AS SO,
+sp.Code as kode_sales,
+sp.Name as sales ,
+ile.[Global Dimension 1 Code] as kodecabang,
+ile.[Item No_] as kdbarang, 
+ile.[Serial No_] as serialno,
+itm.[Description] as namabarang, 
+itm.[Product Group Code] AS kode_kategori, 
+pgr.[Description] as kategori,
+ABS(sil.[Quantity]) as qty,
+sil.[Unit Price] AS harga,
+sil.[Amount] AS jumlah,
+sil.[Line Discount Amount] AS diskon
+
+
+					FROM dbo.[PT_ SINAR RODA UTAMA$Item Ledger Entry] AS ile
+					
+					LEFT JOIN dbo.[PT_ SINAR RODA UTAMA$Item] itm
+					ON ile.[Item No_] = itm.[No_]
+					
+					LEFT JOIN dbo."PT_ SINAR RODA UTAMA$Item Journal Line" ijl
+					ON ile.[Document No_] = ijl.[Document No_]
+					
+					LEFT JOIN dbo.[PT_ SINAR RODA UTAMA$Product Group] pgr
+					ON itm.[Product Group Code] = pgr.Code
+					
+					LEFT JOIN dbo.[PT_ SINAR RODA UTAMA$Sales Shipment Header] ssh
+					ON ile.[External Document No_] = ssh.[No_]
+					
+					LEFT JOIN dbo."PT_ SINAR RODA UTAMA$Sales Invoice Header" sih
+					ON ile.[External Document No_] = sih.[No_]
+					
+					LEFT JOIN 
+					dbo.[PT_ SINAR RODA UTAMA$Sales Invoice Line] AS sil on
+					sih.No_ = sil.[Document No_]
+					
+					left join 
+					(select distinct(ssl.[Document No_]),ssl.[Order No_] 
+					from dbo.[PT_ SINAR RODA UTAMA$Sales Shipment Line] as ssl) AS sl on
+					sl.[Document No_] = sil.[Shipment No_]
+					
+					left join
+					dbo.[PT_ SINAR RODA UTAMA$Sales Header] AS sh on
+					sl.[Order No_] = sh.[No_]
+					
+					LEFT JOIN 
+					dbo."PT_ SINAR RODA UTAMA$Sales Line" AS sli 
+					ON sl.[Order No_] = sli.[Document No_]
+					
+					LEFT JOIN dbo.[PT_ SINAR RODA UTAMA$Customer] ctr
+					ON ssh.[Sell-to Customer No_] = ctr.[No_]
+					
+					left join
+					dbo.[PT_ SINAR RODA UTAMA$Default Dimension] AS deff on
+					deff.No_ = sil.No_
+					
+					LEFT JOIN 
+					( SELECT * FROM dbo."PT_ SINAR RODA UTAMA$Dimension Set Entry" 
+					WHERE
+					[Dimension Code] = 'SALES-RM') AS se
+					ON ile.[Dimension Set ID] = se.[Dimension Set ID]
+					
+					left join
+					dbo.[PT_ SINAR RODA UTAMA$Salesperson_Purchaser] AS sp on
+					sp.[Code] = sh.[Salesperson Code]
+					
+					LEFT JOIN
+					( SELECT  * FROM dbo.[PT_ SINAR RODA UTAMA$Default Dimension]
+						WHERE [Dimension Code] = 'SALES-AREA' 
+					) AS def
+					ON ctr.No_ = def.No_
+					
+					LEFT JOIN 
+					( SELECT  * FROM dbo.[PT_ SINAR RODA UTAMA$Default Dimension]
+						WHERE [Dimension Code] = 'CUST-CAT' 
+					) AS dim
+					ON ctr.No_ = dim.No_
+					
+					LEFT JOIN dbo.[PT_ SINAR RODA UTAMA$Dimension Value] AS val
+					ON val.Code = def.[Dimension Value Code] 
+					
+					LEFT JOIN dbo.[PT_ SINAR RODA UTAMA$Dimension Value] AS diva
+					ON diva.Code = dim.[Dimension Value Code]
+					
+					WHERE 
+					
+					(ile.[Document No_] like 'IJP%' or ile.[Document No_] like 'IJS%')
+					AND
+					ile.[Posting Date] between '2022-09-01' and '2022-09-29'

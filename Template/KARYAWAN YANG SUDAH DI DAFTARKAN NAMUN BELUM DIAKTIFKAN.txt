@@ -1,0 +1,65 @@
+2539 - 2544
+
+1 2211183	2539
+Muhamad Aji Saputra	MUHAMAD AJI SAPUTRA  muhamad.a
+Teknisi 	17  10
+Lampung 	1000017  3
+Joko Utomo & Stepanus Ferry Mandhana 	1770
+01 November 2022 	
+PKWT I 	
+PT. SRU
+
+2 2211184	2540
+Enrika Angesti	ENRIKA ANGESTI	 enrika.a
+Staff Controller TAM 	17  10
+Medan 		1000014  1
+Tigor Sinaga 	753
+01 November 2022 	
+PKWT I 	PT. SRU
+
+3 2211187	2541
+Purwo Adi Prasetyo 	PURWO ADI PRASETYO	purwo.ad
+Kepala Teknisi 	17  10
+Semarang 	1000003 11
+Musbikhin & Stepanus Ferry Mandhana 	476
+01 November 2022 	
+PKWT I 	PT. SRU
+
+4 2211188	2542
+Yuli Mega Mulyasari 	YULI MEGA MULYASARI yuli.m
+Sekretaris 	13 16
+Jakarta 	1000000	5
+Bambang Eko Sunaryanto 	2503
+01 November 2022 	
+PKWT I 	PT. SRU
+
+5 2211189	2543
+Muh Nurefendi 	MUH NUREFENDI	muh.n
+Staff ERP Support  8  5
+Jakarta 	1000000	5
+Firmansyah 	227
+01 November 2022 	
+PKWT I 	PT. SRU
+
+6 2211190	2544
+Raisa Rizqi Giovani 	RAISA RIZQI GIOVANI  raisa.r
+Sekretaris 	13 16
+Jakarta 	1000000	5
+Djunadi 	2253	
+01 November 2022 
+PKWT I 	PT. SRU
+
+NIK
+Nama
+Jabatan
+Dept
+Cabang dan Lokasi
+Atasan
+Tanggal bergabung
+
+muhamad.a
+enrika.a
+purwo.ad
+yuli.m
+muh.n
+raisa.r

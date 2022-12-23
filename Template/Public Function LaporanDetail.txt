@@ -1,0 +1,38 @@
+if (Yii::$app->request->post()){
+			$awal              = empty($_POST['awal'])?'':$_POST['awal'];
+			$akhir             = empty($_POST['akhir'])?'':$_POST['akhir'];	
+			$id_gudang         = empty($_POST['id_gudang'])?'':$_POST['id_gudang'];	
+			$id_cabang         = empty($_POST['id_cabang'])?'':$_POST['id_cabang'];	
+					
+				
+				
+				
+				
+				if (Yii::$app->request->post('tombol')=='filter'){
+					return $this->render('laporandetail',[
+						'awal' => $awal,
+						'akhir' => $akhir,
+						'id_gudang' => $id_gudang,
+						'id_cabang' => $id_cabang,
+					]);			
+				}else if (Yii::$app->request->post('tombol')=='exportexcel'){
+					return $this->renderPartial('laporandetailexcle',[
+						'awal' => $awal,
+						'akhir' => $akhir,
+						'id_gudang' => $id_gudang,
+						'id_cabang' => $id_cabang,
+					]);	
+				}
+	
+			
+		}else{
+			$id_gudang = 1;
+			$id_cabang = 1;
+			$awal = date('Y-m-d');
+			$akhir = date('Y-m-d');
+			return $this->render('laporandetail',[
+				'awal' => $awal,
+				'akhir' => $akhir,
+				'id_gudang' => $id_gudang,
+				'id_cabang' => $id_cabang,
+			]);			

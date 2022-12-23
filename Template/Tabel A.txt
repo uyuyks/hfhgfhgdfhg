@@ -1,0 +1,6 @@
+SELECT  SUM([Invoiced Quantity]) 
+FROM dbo."PT_ SINAR RODA UTAMA$Item Ledger Entry" 
+WHERE 
+[Item No_] LIKE '%SURDIAL%'
+AND [Location Code] IN ('JKT-JP12','JKT-JP28') 
+AND [Posting Date] < '2022-01-01'

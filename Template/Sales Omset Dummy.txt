@@ -1,0 +1,113 @@
+select 
+				
+       /* START TAMBAHAN */
+       q.Name                   AS sal_area
+       ,val.Name                 AS cust_cat,
+       /* END TAMBAHAN */
+	   
+a.[Document Date] AS tgl_faktur,
+a.[Responsibility Center],
+e.No_ AS retur,
+c.[Dimension Value Code] AS RM, 
+a.No_ AS no_faktur, 
+a.[Sell-to Customer No_] AS kode_cust,
+a.[Sell-to Customer Name] AS customer,
+i.[Order No_] AS SO,
+k.Code as kode_sales,
+k.Name as sales ,
+b.No_ AS kode_item,
+b.Description AS item, 
+g.[Dimension Value Code] AS kode_kategori, 
+h.Name AS kategori,
+b.Quantity AS qty, 
+b.[Unit Price] AS harga, 
+b.Amount AS jumlah, 
+b.[Line Discount _] AS diskon
+
+
+				from 
+				dbo.[PT_ SINAR RODA UTAMA$Sales Invoice Header] as a left join 
+				dbo.[PT_ SINAR RODA UTAMA$Sales Invoice Line] as b on
+				a.No_ = b.[Document No_]
+
+
+				left JOIN
+				(SELECT * from
+				dbo.[PT_ SINAR RODA UTAMA$Dimension Set Entry]
+				WHERE [Dimension Code] = 'PROD-CAT'
+				) as d on
+				d.[Dimension Set ID] = b.[Dimension Set ID]
+				left join
+
+				dbo.[PT_ SINAR RODA UTAMA$Sales Cr_Memo Header] as e on
+				e.[Applies-to Doc_ No_] = a.[No_]
+
+				left join
+				dbo.[PT_ SINAR RODA UTAMA$Salesperson_Purchaser] as f on
+				f.[Code] = a.[Salesperson Code]
+
+				left join
+				dbo.[PT_ SINAR RODA UTAMA$Default Dimension] as g on
+				g.No_ = b.No_
+
+				left join
+				dbo.[PT_ SINAR RODA UTAMA$Dimension Value] as h on
+				g.[Dimension Value Code] = h.Code
+
+				left join 
+				(select distinct(ssl.[Document No_]),ssl.[Order No_] 
+				from dbo.[PT_ SINAR RODA UTAMA$Sales Shipment Line] as ssl) as i on
+				i.[Document No_] = b.[Shipment No_]
+
+				left join
+				dbo.[PT_ SINAR RODA UTAMA$Sales Header] as j on
+				i.[Order No_] = j.[No_]
+
+				left JOIN
+
+				(SELECT * FROM
+				dbo.[PT_ SINAR RODA UTAMA$Dimension Set Entry]
+				WHERE
+				[Dimension Code] = 'SALES-RM') 
+				as c on
+				j.[Dimension Set ID] = c.[Dimension Set ID]
+				
+
+
+/* START SAL AREA*/
+LEFT JOIN dbo.[PT_ SINAR RODA UTAMA$Customer] AS cus
+ON a.[Sell-to Customer No_] = cus.[No_]
+LEFT JOIN
+(
+	SELECT  *
+	FROM dbo.[PT_ SINAR RODA UTAMA$Default Dimension]
+	WHERE [Dimension Code] = 'SALES-AREA' 
+) AS p
+ON cus.No_ = p.No_
+LEFT JOIN dbo.[PT_ SINAR RODA UTAMA$Dimension Value] AS q
+ON q.Code = p.[Dimension Value Code] 
+/* END SAL AREA*/
+/* START CUST CAT*/
+LEFT JOIN
+(
+SELECT  *
+	FROM dbo.[PT_ SINAR RODA UTAMA$Default Dimension]
+	WHERE [Dimension Code] = 'CUST-CAT' 
+) AS def
+ON cus.No_ = def.No_
+LEFT JOIN dbo.[PT_ SINAR RODA UTAMA$Dimension Value] AS val
+ON val.Code = def.[Dimension Value Code]
+/* END CUST CAT*/				
+
+
+
+				left join
+				dbo.[PT_ SINAR RODA UTAMA$Salesperson_Purchaser] as k on
+				k.[Code] = j.[Salesperson Code]
+
+				WHERE
+				e.No_ is null and
+				b.Quantity <> 0 
+				
+				and i.[Order No_] LIKE '%IJS%'
+				

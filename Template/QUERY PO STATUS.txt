@@ -1,0 +1,43 @@
+SELECT  
+					a.[Document Date] AS tgl_po,
+					a.[Order Date] AS tgl_order,
+					a.[Pay-to Vendor No_] AS no_vendor,
+					a.[Pay-to Name] AS nm_vendor,a.No_ AS no_po,
+					a.[Expected Receipt Date] AS recept_date,
+					b.[Line No_] AS line,
+					b.No_ AS no_item,b.Description AS item, b.[Unit of Measure] AS unit,b.Quantity, 
+					b.[Quantity Invoiced] as qty_i,c.[Line No_],c.Quantity AS terima
+					
+					FROM 
+					dbo."PT_ SINAR RODA UTAMA$Purchase Header" AS a LEFT JOIN 
+					dbo."PT_ SINAR RODA UTAMA$Purchase Line" AS b 
+					ON a.No_ = b.[Document No_]
+					LEFT JOIN 
+					(SELECT  
+					[Line No_], [Order No_],[No_],
+					SUM(Quantity) AS Quantity
+
+					FROM 
+					dbo."PT_ SINAR RODA UTAMA$Purch_ Rcpt_ Line" 
+					WHERE
+					Correction = 0
+					AND Quantity <> 0
+					AND [Posting Date] <='$tglclosing 00:00:00.000'
+					AND [Order No_] <> '' 
+
+					GROUP BY 
+					[Order No_],[Line No_],[No_]
+
+
+					)
+					AS c 
+					ON c.[Order No_] = b.[Document No_] and c.[Line No_] = b.[Line No_] AND c.[No_] = b.[No_]
+
+					WHERE
+					a.No_ LIKE 'PO%'
+					AND a.Status = 1 
+					AND b.Quantity <> 0
+					AND a.[Document Date] BETWEEN '$tglawal 00:00:00.000' AND '$tglakhir 00:00:00.000'
+					$strvendor
+
+					ORDER BY a.No_ Desc, b.[Line No_] ASC 

@@ -1,0 +1,172 @@
+NAV dan SCM
+Terkait dengan inventory adalah item
+master item adalah salah satu yg ada di nav
+item inventory dan item service
+kode barang
+deskripsi
+informasi ijin edar (harus di update)
+didalam item ada inventory
+ini inventory seluruh nasional
+
+ada informasi yang terkait dengan FAT terhubung dengan COA atau Account
+
+yg terkait dengan informasi 
+metode reordering
+
+litime berdasarkan item dan lokasi
+
+informasi item
+ada dimensi
+
+untuk menyimpan lebih kepada analisa accounting berdasarkan perspektif produk atau customer atau cabang
+dimensi ini disesuaikan dengan master yang ada di nav
+kebutuhan dimensi ini berakhir kepada laporan
+
+ada nomor
+nama barang
+replenishment 
+kemudian planning
+metode ordering
+kebutuhannya apa
+Fixed Reorder qty : berdasarkan kuantitinya ya segitu 
+maximum kuantiti : melihat digudang maximum nya berapa kalo kurang dri maximum harus preorder lgi
+order: berdasarkan order aja
+lot-for-lot : ternyata lot itu perlu di dipenuhi kembali maka akan terbaca
+
+safetylead time : secara umum
+disini juga ada informasi item tracking 
+1. lot all : item ini hanya
+ada expirednya
+hanya serial number saja
+
+ijin edar
+informasi ijin edar dari kemenkes
+
+product kategori nilai persediaan barang, melihat nilai berdasarkan kategori
+
+cross reference ini modul yang menghubungkan antara item dengan vendor dan bisa memasukan kode vendornya disini
+ada kaitannya dengan planning
+
+ada unit of measure 
+konversi item dari pcs ke karton ke box atau satuan yg lain bisa dikonversi disini
+
+nav ini multi um
+
+stockkeeping ini menyimpan item matriks dengan lokasi bisa diedit disini
+berarti item syriing ini di cabang bandung itu menggunakan transfer
+
+didalam item ada informasi informasi bisa difilter berdasarkan yg dituju misal kode item
+
+jika mau dicari berdasarkan yg dituju saja bisa dikasi * dibelakang kata yg di tuju
+
+report yg terkait dengan invonetory yg lain pasti terkait dengan nav validitas dan akulasi
+
+inventory itu pasti satuan terkecil 
+dan ada informasi inventory
+untuk inventory yang ada disini adalah inventory yg ada di nav dan seluruh tim yg ada di nav
+berarti harusnya data di jasper dan di nav sama persis dengan realtime
+
+untuk layar ini inventory secara general
+kalo untuk melihat dari sisi lot number akan ada tools lain lagi
+
+firmansyah
+_______________________________________________________________________________________________________________________
+
+shipping
+modul yang digunakan untuk pengiriman ke cust atau perpindahan ke gudang
+PSS 
+PTS 
+
+pembuatan SOP
+melakuakn pembuatan sop
+klik pojok jkanan atas "sales order"
+pilih new 
+untuk nomor klik titik 3 yg kecil
+biasanya untuk barang dagang bisa pake SOP
+customer no lebih ke kode customer
+alamat otomatis terisi
+
+ada document date terisi otomatis saat membuat SO tanggal di sistem tanggal due date saat di posting
+orderdate lebih ke untuk merekam tanggal pemesanan atau order, akan otomatis terisi atau generate saat document date diisi
+request date permintaan dari customer
+promised date tanggal yang dijanjikan ke customer
+external document tertera nomor po 
+sales person : marketing yg memohon untuk pembuatan so
+responbility akan otomatis terisi saat menarik data customer
+ada assigne user id diisi oleh pembuat SOP 
+sales order date tanggal kita buat SO nya per tanggal berapa
+ecatalog jika ada permintaan dari pihak hd 
+
+
+invoice details
+ada customer price grup disesuaikan dari po yang diterima apakah itu hd atau nhd
+transaction type lebih ke kebutuhan yang hd atau nhd 
+project kalau dia sudah terdaftar di kso dia punya code nya tersendiri
+location code itu diproses dari gudang mana
+line item diisi yg mau dikeluarkan barang apa
+trus diisi kode barangnya
+bin code biasanya akan otomatis terisi ada di lokasi mana barang tersebut
+quantity banyaknya barang
+saat kita melakukan penginputan hd set akan otomatis ke assembly to order line ( AO )
+biasanya dari MS akan disesuaikan permintaan customer
+
+setelah disiini dari line item dan semuanya komposisi sudah sesuai di release di AO nya 
+selanjutnya fokus di status
+saat proses SO saat status nya masi open masi bisa merubah field field yang ada
+Di Dimension akan otomatis terisi
+kecuali Dept harus diisi sesuai dengan SO
+untuk sales rm diisi sesuai barang
+sales category sesuaikan dengan tampilan header harus diisi baik header maupun dimensi
+ada 2
+dimensi di header & dimensi line datanya harus sama
+
+membuat surat jalan
+pastikan status harus menjadi Released
+
+selanjutnya membuat warehouse shipment
+tinggal ketik di pojok kanan atas warehouse shipment
+pilih new pencet oke aja
+location code isi di gudang yg dituju
+bin code pilih consumable
+assigned user id ini yang melakukan pembuatan WS siapa usernya
+
+pada saat menginputkan item tinggal pilih action dan get document
+kita cari so yang tadi kita buat dan akan otomatis langsung terisi
+dilakukan oleh admin gudang karna yang tau persis lot numbernya
+setelah menarik so 
+ke line lalu assembly to order
+line
+item tracking line untuk menginput lot number dari item tersebut
+
+untuk penginputan ws jika ada yg kurang akan ada notif dari sistem untuk di kroscheck kembali
+mau proses ws harus diisi semua karna jika ada lot number yang belum diinput akan ada notif error yang harus mesti diisi
+oleh admin gudang kemudian akan dilakukan posting oleh PIC nya
+
+kalo mau buat SO langkahnya sama persis kaya sebelumnya
+pilih barang item untuk nhd
+
+shipping dan biling ada location code nya isi jakarta
+
+kalo input gaada barangnya karna ada minimum qty nya
+
+ke dimensi isi depatemen sesuai kategori barang
+cek kembali sudah sama atau belum dengan di line header lalu di released
+
+________________________________________________________________________________________________________________________
+
+Receiving 
+buat purchase order
+new
+ada barang dagang (BD), sparepart (SP) dan inventaris kantor (GA)
+lalu akan terbantuk suatu  nomor PO baru
+lalu masukan nama vendor
+vendor shipment dan order diisi apabila dapet order
+
+invoice detail 
+ada info pembayaran
+
+ga lebih ke arah fixed asset
+
+movement
+
+movement berguna biasa disebut transfer order

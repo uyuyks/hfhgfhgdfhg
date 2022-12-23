@@ -1,0 +1,132 @@
+public function actionClosingrunninghour($tahun,$bulan)
+    { 
+	
+	$tahun = date('Y');
+	$bulan= date('m');
+	
+	echo "Running Hour";
+	echo "<br>";
+	echo "______________________________________<br>";	
+	echo "Tahun :".$tahun."<br>";
+	echo "Bulan :".$bulan."<br>";
+	echo "______________________________________<br>";	
+    echo "Running Hour";
+	echo "<br>";
+	
+		//$con = \Yii::$app->db;
+		$con = Yii::$app->dbnewtam;
+		
+		
+	   //delete tahun dan bulan
+	   $delete = "
+	            DELETE FROM tam_live.runninghour_closing 
+                WHERE tahun='$tahun' AND bulan='$bulan'";
+	   $con->createCommand($delete)->execute();
+				
+		$q = "
+			SELECT r.noseri
+			FROM tam_live.runninghour r
+			WHERE YEAR(r.tgl_trans)='$tahun' AND month(r.tgl_trans)='$bulan'
+			and r.noseri NOT LIKE 'SN%'
+			GROUP BY r.noseri
+				";			
+		$r = $con->createCommand($q)->queryAll();
+		
+		
+		$n=0;
+		$nn=0;	
+		
+		if($r){
+			
+			foreach($r as $rr){
+			
+
+		    $n++;
+            $noseri = $rr['noseri'];			
+			$q = "
+				SELECT 
+				r.tgl_trans, r.noseri, r.running_hour, r.keterangan, r.operasional,mk.Kode_Karyawan,
+				r.`status`,wo.no_wo, c.kode_customer, c.Nama_customer, mk.nik, mk.Nama_Karyawan, mk.cabang, mk.ad_user_id
+				FROM tam_live.runninghour r
+				JOIN tam_live.scanheader h ON r.id_scanheader = h.id_scan_header
+				LEFT JOIN tam_live.dashboard_wo_detail dd ON h.id_dashboard_detail = dd.id_dashboard
+				LEFT JOIN tam_live.dashboard_wo_header hh ON dd.id_dashboard_wo_header = hh.id_dashboard_wo_header
+				LEFT JOIN tam_live.work_order wo ON hh.id_wo = wo.id_wo
+				LEFT JOIN tam_live.m_customer c ON wo.id_rs = c.id_customer
+				LEFT JOIN tam_live.master_karyawan_new mk ON wo.kode_karyawan = mk.Kode_Karyawan
+				where YEAR(r.tgl_trans)='$tahun' AND month(r.tgl_trans)='$bulan'
+				AND r.noseri='$noseri'
+				ORDER BY r.tgl_trans DESC
+				LIMIT 1
+					";			
+			$data = $con->createCommand($q)->queryOne();
+		    
+			$tgl_trans = $data['tgl_trans'];
+			$running_hour = $data['running_hour'];
+			$keterangan = $data['keterangan'];
+			$operasional = $data['operasional'];
+			$status = $data['status'];
+			$no_wo = $data['no_wo'];
+			
+			$kode_customer = $data['kode_customer'];
+			$Nama_customer = $data['Nama_customer'];
+			$nik = $data['nik'];
+			$Nama_Karyawan = $data['Nama_Karyawan'];
+			$cabang = $data['cabang'];
+			$ad_user_id = $data['ad_user_id'];
+			$Kode_Karyawan = $data['Kode_Karyawan'];
+			
+			$area="";
+			$tanggal_closing = date("Y-m-d H:i:s");
+
+			
+			
+
+			   $insert = "
+			   INSERT INTO tam_live.runninghour_closing(
+			   id_runninghour_closing,
+			   tahun,
+			   bulan,
+			   area,
+			   id_rs,
+			   nama_rs,
+			   running_hour,
+			   tanggal_closing,
+			   keterangan,
+			   operasional,
+			   status,
+			   no_wo,
+			   tgl_wo,
+			   nik,
+			   Kode_Karyawan,
+			   nama_teknisi,
+			   cabang
+			   ) VALUES(
+			   '',
+			   '$tahun',
+			   '$bulan',
+			   '$area',
+			   '$kode_customer',
+			   '$Nama_customer',
+			   '$running_hour',
+			   '$tanggal_closing',
+			   '$keterangan',
+			   '$operasional',
+			   '$status',
+			   '$no_wo',
+			   '$tgl_trans',
+			   '$nik',
+			   '$Kode_Karyawan',
+			   '$Nama_Karyawan',
+			   '$cabang'
+			   )";
+			   
+				$con->createCommand($insert)->execute();	
+                print_r($n);
+				print_r(".");
+                print_r($rr['noseri']);
+                print_r("........Added");	
+                print_r("<br>");				
+				
+			}
+		}

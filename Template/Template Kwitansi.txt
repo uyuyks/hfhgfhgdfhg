@@ -1,0 +1,347 @@
+<?php
+use yii\helpers\Html;
+use yii\widgets\DetailView;
+
+/* @var $this yii\web\View */
+/* @var $model app\models\Dana_kas */
+
+$this->title = $model->id;
+$this->params['breadcrumbs'][] = ['label' => 'Dana Kas', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
+
+	function penyebut($nilai) {
+		$nilai = abs($nilai);
+		$huruf = array("", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas");
+		$temp = "";
+		if ($nilai < 12) {
+			$temp = " ". $huruf[$nilai];
+		} else if ($nilai <20) {
+			$temp = penyebut($nilai - 10). " belas";
+		} else if ($nilai < 100) {
+			$temp = penyebut($nilai/10)." puluh". penyebut($nilai % 10);
+		} else if ($nilai < 200) {
+			$temp = " seratus" . penyebut($nilai - 100);
+		} else if ($nilai < 1000) {
+			$temp = penyebut($nilai/100) . " ratus" . penyebut($nilai % 100);
+		} else if ($nilai < 2000) {
+			$temp = " seribu" . penyebut($nilai - 1000);
+		} else if ($nilai < 1000000) {
+			$temp = penyebut($nilai/1000) . " ribu" . penyebut($nilai % 1000);
+		} else if ($nilai < 1000000000) {
+			$temp = penyebut($nilai/1000000) . " juta" . penyebut($nilai % 1000000);
+		} else if ($nilai < 1000000000000) {
+			$temp = penyebut($nilai/1000000000) . " milyar" . penyebut(fmod($nilai,1000000000));
+		} else if ($nilai < 1000000000000000) {
+			$temp = penyebut($nilai/1000000000000) . " trilyun" . penyebut(fmod($nilai,1000000000000));
+		}     
+		return $temp;
+	}
+
+	function terbilang($nilai) {
+		if($nilai<0) {
+			$hasil = "minus ". trim(penyebut($nilai));
+		} else {
+			$hasil = trim(penyebut($nilai));
+		}     		
+		return $hasil;
+	}
+	
+  $Dana_kas = $model->Dana_kas;
+  $querydanakas= Yii::$app->dbsirup->createCommand("
+   SELECT 
+						a.id,
+						a.no_doc,
+						a.tgl_input,
+						b.tgl AS tgl_transaksi
+						 
+						FROM db_pengajuan_dana.dana_kas AS a
+						LEFT JOIN db_pengajuan_dana.dana_kas_line AS b
+						ON a.id = b.id_dana_kas
+
+						GROUP BY a.id")->queryOne();                                                  
+   
+  $kota = $querydanakas['id'];
+  $alamat = $querydanakas['no_doc'];
+  $telp = $querydanakas['tgl_input'];
+  $email = $querydanakas['tgl'];
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Kwitansi</title>
+    <style type="text/css">
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            /*background-color: #FAFAFA;*/
+			background-color: #FFFFFF;
+            font: 9pt "Tahoma";
+        }
+        * {
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+        }
+        .page {
+            width: 190mm;
+            min-height: 297mm;
+            /*padding: 2mm;*/
+			padding-left: 7mm;
+			padding-right: 5mm;
+			padding-top: 0mm;
+			padding-bottom: 8mm;
+            margin: 10mm auto;
+            border: 0px black solid;
+            border-radius: 5px;
+            background: white;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .tabel{
+            padding: 8px;
+        }
+        .sru{
+            color: black;
+            font-weight: bold;
+			font: 12pt "Tahoma";
+        }
+        .judul{
+            /*font: 12pt "Tahoma";*/
+			font: 10pt "Tahoma";
+            font-weight: bold;
+            padding: 10px 10px 10px;
+            text-align: left;
+            margin-top: 5px;
+        }
+		.judul2{
+            font: 7pt "Tahoma";
+            font-weight: bold;
+            border: black 2px solid;
+            padding: 10px 10px 10px;
+            text-align: center;
+            margin-top: 5px;
+        }
+		.jabatan{
+            font: 12pt "Tahoma";
+            padding: 10px 10px 10px;
+            text-align: center;
+            margin-top: 5px;
+        }
+		.judul3{
+           /* font: 9pt "Tahoma";*/
+		   font: 8pt "Tahoma"
+        }
+		.konten1{
+            font: 7pt "Tahoma";
+        }
+
+           
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        @media print {
+            html, body {
+                width: 210mm;
+                height: 297mm;        
+            }
+            .page {
+                margin: 0;
+                border: initial;
+                border-radius: initial;
+                width: initial;
+                min-height: initial;
+                box-shadow: initial;
+                background: initial;
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="book">
+        <div class="page">
+		
+		
+		    <br>
+            <table border="0" width="100%" class="tabel">
+                <tr>
+				    <td width="2%" align="left" valign="center"> 
+                    </td>
+                    <td width="10%" align="left" valign="center">
+					    <img width="75" height="75" src="http://10.10.20.231:2020/sirup/file/logo-baru.jpg">
+                    </td>
+					<td width="2%" align="left" valign="center"> 
+                    </td>
+					<td width="86%" align="left" valign="center">
+					    <b>PT. SINAR RODA UTAMA </b><br>
+						<?=$alamat?><br>
+						<?=$telp?><br>
+					</td>
+                </tr>
+				<tr><td colspan="4"><hr style="border-top: 2px solid black;"></td></tr>
+			</table>
+			
+			<table border="0" width="100%" class="tabel">
+				
+				<tr>
+                    <td align="center" valign="top">
+                        <span class="sru"><u>KWITANSI</u></span><br>
+                    </td>
+                </tr>
+				<tr>
+                    <td align="left" valign="top">
+						No. &nbsp; <u>
+						<?=$model->id ?></u>
+                    </td>
+                </tr>
+            </table>
+			
+			
+			<table border="0" width="100%" class="tabel">
+                <tr>
+                    <td align="left" valign="top" width="20%">
+                        Telah terima dari
+                    </td>
+					<td align="left" valign="top" width="1%">
+                        :
+                    </td>
+					<td align="left" valign="top" width="79%">
+                        <?=($model->no_doc) ?>
+                    </td>
+                </tr>
+				<tr>
+                    <td align="left" valign="center">
+                        Uang Sejumlah
+                    </td>
+					<td align="left" valign="center">
+                        :
+                    </td>
+					<td align="left" valign="top">
+					    <p style="border:1px; border-style:solid;  padding: 1em;">
+						<?php $text = penyebut($model->tgl_input);?>
+							# <?= ucfirst(strtolower(substr_replace($text,"",0,1))); ?> rupiah #
+							
+						</p>
+                    </td>
+                </tr>
+				
+				<tr>
+                    <td align="left" valign="top">
+                        Untuk Pembayaran
+                    </td>
+					<td align="left" valign="top">
+                        :
+                    </td>
+					<td align="left" valign="top">
+                        <?=$model->keterangan ?> 
+						  &nbsp;
+						Faktur No.<?=$model->tgl_input ?>
+						
+                    </td>
+                </tr>
+
+            </table>
+			
+		
+			<table border="0" width="100%" class="tabel">
+
+				<tr>
+                    <td align="left" valign="top" width="70%">
+                        
+                    </td>
+					<td align="left" valign="top" width="30%">
+					<?php
+							if($model->tgl_kwitansi==""){
+								$tgl = "";
+							}else{
+								$tgl = Yii::$app->fungsi->TanggalIndo($model->tgl_kwitansi);
+							}
+					?>
+                        <?=$kota?>, &nbsp;
+						<u><?= $tgl ?></u>
+                    </td>
+                </tr>
+
+            </table>
+			
+			<table border="0" width="100%" class="tabel">
+                <tr>
+                    <td align="center" valign="top" width="40%">
+					    <p style="border:1px; border-style:solid;  padding: 0.5em;">
+							Rp. <?=number_format($model->total,0) ?>
+						</p>
+                    </td>
+					<td align="center" valign="top" width="60%">
+                 
+                    </td>
+                </tr>
+            </table>
+			
+			<br><br>
+			
+			
+	
+			<table border="0" width="100%" class="tabel">
+
+				<tr>
+                    <td align="left" valign="top" width="60%">
+                        
+                    </td>
+					<td align="center" valign="top" width="40%">
+                        <u>
+						
+						
+						<?php 
+							if($model->nama == "DICKY SJAMSUL ARIFIN"){
+								$namattd ="dr. Dicky S Arifin DpH, MSC";
+							}else{
+								$namattd =$model->nama;
+							} 
+						?>
+						
+						<?=($namattd) ?>
+						
+						</u>
+                    </td>
+                </tr>
+				<tr>
+                    <td align="left" valign="top" width="60%">
+                        
+                    </td>
+					<td align="center" valign="top" width="40%">
+                        <?=($model->jabatan) ?>
+                    </td>
+                </tr>
+
+            </table>
+		</div>
+    </div>
+</body>
+</html>
+<table width="100%">
+  <tr>
+    <td width="1000">Jakarta, <?php //echo tgl_indo($now); ?></td>
+    <td width="460">&nbsp;</td>
+    <td width="460">&nbsp;</td>
+  </tr>
+  <tr>
+    <td align="center" valign="top">Di Ajukan Oleh<br />
+    <br />
+    <br />
+    <br />
+    <br />
+    (&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</td>
+    <td align="center" valign="top">Di Input Oleh<br />
+    <br />
+    <br />
+    <br />
+    <br />
+    (&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</td>
+    
+</table>

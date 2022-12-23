@@ -1,0 +1,76 @@
+SELECT 
+	no_item, posting_date, document_no, location_code, document_date, no_series,  no,
+	no_customer, rumah_sakit, alamat, city, location_code_1, description, SUM(quantity)AS quantity, uom
+	FROM(
+		SELECT 
+			ile.[Item No_] AS no_item, ile.[Posting Date] AS posting_date, ile.[Document No_] AS document_no, 
+			ile.[Location Code] AS location_code, ile.[Document Date] AS document_date, 
+			ile.[External Document No_] AS external_document_no, ile.[No_ Series] AS no_series, 
+			
+			
+			(
+				SELECT TOP 1 [No_]
+				FROM dbo.[PT_ SINAR RODA UTAMA$Item]
+				WHERE [No_]=ile.[Item No_]
+			) AS no, 
+			
+			(
+				SELECT TOP 1
+				se.[Dimension Value Code]
+				from dbo.[PT_ SINAR RODA UTAMA$Dimension Set Entry] se
+				LEFT JOIN dbo.[PT_ SINAR RODA UTAMA$Customer] c ON se.[Dimension Value Code] = c.[No_]
+				WHERE se.[Dimension Set ID]=ile.[Dimension Set ID]
+				AND se.[Dimension Code]='CUSTOMER'
+			) AS no_customer, 
+			
+			
+			(
+				SELECT TOP 1
+				c.[Name]
+				from dbo.[PT_ SINAR RODA UTAMA$Dimension Set Entry] se
+				LEFT JOIN dbo.[PT_ SINAR RODA UTAMA$Customer] c ON se.[Dimension Value Code] = c.[No_]
+				WHERE se.[Dimension Set ID]=ile.[Dimension Set ID]
+				AND se.[Dimension Code]='CUSTOMER'	
+			
+			)AS rumah_sakit,
+			
+			(
+			SELECT TOP 1
+				c.[Address]
+				from dbo.[PT_ SINAR RODA UTAMA$Dimension Set Entry] se
+				LEFT JOIN dbo.[PT_ SINAR RODA UTAMA$Customer] c ON se.[Dimension Value Code] = c.[No_]
+				WHERE se.[Dimension Set ID]=ile.[Dimension Set ID]
+				AND se.[Dimension Code]='CUSTOMER'	
+			) AS alamat, 
+			
+			(
+			SELECT TOP 1
+				c.[City]
+				from dbo.[PT_ SINAR RODA UTAMA$Dimension Set Entry] se
+				LEFT JOIN dbo.[PT_ SINAR RODA UTAMA$Customer] c ON se.[Dimension Value Code] = c.[No_]
+				WHERE se.[Dimension Set ID]=ile.[Dimension Set ID]
+				AND se.[Dimension Code]='CUSTOMER'	
+			) AS city, ssh.[Order No_] AS order_no, 
+			
+			ile.[Location Code] AS location_code_1, 
+			
+			(
+				SELECT TOP 1 [Description] 
+				FROM dbo.[PT_ SINAR RODA UTAMA$Item]
+				WHERE  [No_]=ile.[Item No_]
+			)AS description,
+			abs(ile.[Quantity]) AS quantity, 
+			
+			(SELECT TOP 1 [Base Unit of Measure] 
+				FROM dbo.[PT_ SINAR RODA UTAMA$Item]
+				WHERE  [No_]=ile.[Item No_]) AS uom
+			
+		FROM dbo.[PT_ SINAR RODA UTAMA$Item Ledger Entry] AS ile
+		LEFT JOIN dbo.[PT_ SINAR RODA UTAMA$Sales Shipment Header] AS ssh ON ile.[External Document No_] = ssh.[No_]
+		WHERE 
+		(ile.[Document No_] like 'IJP%' or ile.[Document No_] like 'IJS%')
+		AND
+		ile.[Posting Date] between '2022-09-01' and '2022-09-29'
+)AS tb
+GROUP BY tb.no_item, tb.posting_date, tb.document_no, tb.location_code, tb.document_date, tb.no_series,  tb.no,
+tb.no_customer, tb.rumah_sakit, tb.alamat, tb.city, tb.location_code_1, tb.description, tb.uom

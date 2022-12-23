@@ -1,0 +1,9 @@
+select b.id_pesanan,b.qty,c.nama, b.total,b.bbn,b.diskon,b.biaya,c.kode_produk,
+floor (b.dpp) AS dpp,
+CEIL (b.ppn) AS ppn,c.tipe,a.catatan
+						from pesanan a, pesanan_detail b, m_product c 
+						where b.id_pesanan=27107
+						and b.id_pesanan=a.id_pesanan
+						and b.id_produk=c.id_produk
+						and b.status='K'
+						order by c.tipe desc

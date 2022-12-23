@@ -1,0 +1,13 @@
+SELECT
+wo.no_wo,c.Nama_customer, mk.Nama_Karyawan, wo.date_plan_wo,
+dh.open_time, dh.closed_time,
+DATEDIFF(date(dh.closed_time), date(dh.open_time)) AS perbaikan_time
+FROM tam_live.work_order wo
+LEFT JOIN tam_live.m_customer c ON wo.id_rs = c.id_customer
+LEFT JOIN tam_live.master_karyawan_new mk ON wo.kode_karyawan = mk.Kode_Karyawan
+LEFT JOIN tam_live.dashboard_wo_header dh ON wo.id_wo = dh.id_wo
+WHERE wo.id_jenis_kunjungan='12'
+AND date(wo.date_plan_wo) BETWEEN '2022-03-01' AND '2022-03-31'
+AND wo.`STATUS`='2'
+AND mk.cabang='1000001'
+ORDER BY DATEDIFF(date(dh.closed_time), date(dh.open_time)) desc

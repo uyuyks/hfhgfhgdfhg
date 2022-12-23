@@ -1,0 +1,386 @@
+
+
+# menambahkan user sirup => customer_db
+
+   # Cek Nik
+        SELECT * FROM customer_db.master_karyawan mk WHERE mk.nik IN('2110964','2110952','2110955');
+   # Cek Master Data
+	SELECT * FROM customer_db.master_cabang;
+	SELECT * FROM customer_db.departemen;
+	SELECT * FROM customer_db.m_dept_karyawan;
+
+   # Cek apakah karyawan sudah ada
+	SELECT * FROM customer_db.master_karyawan 
+	WHERE nik='2030195' 
+	OR Nama_Karyawan like '%MUSBIKHIN%'
+	OR Username='kholid.a';
+
+   # Cek departemen
+        SELECT * FROM customer_db.master_karyawan mk WHERE mk.id_dept=7;
+
+   # Menambahkan karyawan baru
+	INSERT INTO customer_db.master_karyawan
+	(nik,Nama_Karyawan,id_dept,active,Username,Password,Kode_Atasan,no_dept,Kode_Cabang)
+	VALUES
+	('2030193','FAUZAL RIZKY PRASETYA','17','Y','fauzal.r','Fauzal3116','476','10','1000003');
+
+# pengajuan dana => db_pengajuan_dana
+
+   # Cek Apakah Karyawan Sudah Ada
+	SELECT * FROM master_karyawan 
+	WHERE nik='2030195'
+	
+   # Copy data karyawan dari Customer_db
+	INSERT INTO `db_pengajuan_dana`.`master_karyawan` (`id`,`nik`, `Nama_Karyawan`, `username`, `password`, `Tipe_User`, `Kode_Cabang`, `marketing`, `status_marketing`, `Kode_Atasan`, `Category`, `Category_Tracking`, `Category_Konsep_Komisi`, `Konsep_Komisi`, `Category_AR_Analysis`, `cat_sp`, `cat_coll`, `nama_erp`, `no_dept`, `email`, `no_telp`, `sales_tracking`, `ip_address`, `active`, `kode_sales`, `ktp`, `alamat`) 
+	SELECT `Kode_Karyawan`,`nik`, `Nama_Karyawan`, `Username`, `Password`, `Tipe_User`, `Kode_Cabang`, `marketing`, `status_marketing`, `Kode_Atasan`, `Category`, `Category_Tracking`, `Category_Konsep_Komisi`, `Konsep_Komisi`, `Category_AR_Analysis`, `cat_sp`, `cat_coll`, `nama_erp`, `no_dept`, `email`, `no_telp`, `sales_tracking`, `ip_address`, `active`, `kode_sales`, `ktp`, `alamat`
+	FROM   `customer_db`.`master_karyawan` as c
+	WHERE  c.`Kode_Karyawan` = 2125
+
+# notulen => db_notulen
+
+   # Cek Apakah User Sudah Ada
+	SELECT * FROM db_notulen.user 
+	WHERE no_user='2125' 
+	OR no_user2='2125' 
+	OR username='kholid.a'
+	OR full_name LIKE '%mus%';
+	
+   # Menambahkan User Notulen
+	INSERT INTO db_notulen.USER(no_user2, username, PASSWORD, full_name, setup_user, notulen, active)
+	VALUES('2126','fauzal.r','Fauzal3116','Fauzal Rizky Prasetya','view only','view only','Y');
+
+   # Cek User yang baru saja disimpan
+	SELECT * FROM db_notulen.hak_cp
+	WHERE no_user=822;
+
+   # Menambahkan Hak Akses
+        822 = cek_user2
+	INSERT INTO db_notulen.hak_cp VALUES('','822','sru','1');
+
+
+# aplikasi mobile tam
+
+   # Cek Master Data
+	SELECT * FROM tam_live.master_karyawan_new WHERE nik='2110972';
+	SELECT * FROM tam_live.master_karyawan WHERE nik='2110972';
+	SELECT * FROM tam_live.master_cabang;
+	SELECT * FROM tam_live.team_teknisi;
+	SELECT * FROM tam_live.team_teknisi_detail;
+	SELECT * FROM tam_live.team_teknisi_detail WHERE Kode_Karyawan='2329';
+	SELECT * FROM tam_live.kepala_teknisi;
+	SELECT * FROM tam_live.teknisi WHERE teknisi='2329';
+
+   # Menambahkan ke New Karyawan
+	INSERT INTO master_karyawan_new(Kode_Karyawan,nik,Nama_Karyawan, Username, PASSWORD, active, cabang)
+	VALUES('2126','2030195','FAUZAL RIZKY PRASETYA','fauzal.r',MD5('Fauzal3116'),'Y','1000003');
+
+   # Copy dari master new ke master karyawan
+	INSERT INTO master_karyawan(Kode_Karyawan,nik,Nama_Karyawan, Username, PASSWORD, active)
+	SELECT Kode_Karyawan,nik,Nama_Karyawan, Username, PASSWORD, active
+	FROM master_karyawan_new AS c 
+	WHERE c.Kode_Karyawan = 2126
+
+   # Menambahkan Teknisi detail atau TEAM
+	INSERT INTO team_teknisi_detail(id_team, Kode_Karyawan, createddate, aktif)
+	VALUES('38','2126',NOW(),'Y');
+
+# Aplikasi Web TAM
+
+MODUL USER
+
+1. Super Admin = 1,2,4,5,6,7
+2. Admin Cabang = 1,5,6
+3. Admin Sparepart = 1
+
+SELECT * FROM customer_db.master_karyawan WHERE nik='1910798';
+SELECT * FROM db_tam.m_modul;
+SELECT * FROM db_tam.m_role;
+SELECT * FROM db_tam.master_karyawan WHERE kode_karyawan='2143' OR nik='2010918';
+SELECT * FROM db_tam.user_role_2 WHERE nik='2010918';
+SELECT * FROM db_tam.user_client WHERE nik='2010918';
+SELECT * FROM db_tam.user_role WHERE id_user_client IN(42);
+SELECT * FROM db_tam.modul_user WHERE id_user_role IN(42);
+
+# cek role 1
+
+SELECT kar.kode_karyawan,kar.nik,kar.Nama_Karyawan, ro.role, mo.modul
+FROM modul_user mu
+JOIN user_role ur ON mu.id_user_role = ur.id_user_role
+JOIN user_client uc ON ur.id_user_client = uc.id_user_client
+JOIN master_karyawan kar ON uc.nik = kar.nik
+JOIN m_modul mo ON mu.id_modul = mo.id_modul
+JOIN m_role ro ON ur.id_role = ro.id_role;
+
+# cek role 2
+
+SELECT 
+(SELECT Kode_Karyawan FROM db_tam.master_karyawan WHERE nik = ur.nik LIMIT 1) AS kode,
+ur.nik,
+(SELECT Nama_Karyawan FROM db_tam.master_karyawan WHERE nik = ur.nik LIMIT 1) AS nama,
+(SELECT Kode_Cabang FROM customer_db.master_karyawan WHERE nik = ur.nik LIMIT 1) AS kdcabang,
+(SELECT Nama_Cabang FROM customer_db.master_cabang WHERE kode_erp = kdcabang LIMIT 1) AS cabang,
+mu.id_user_role, 
+ur.id_role,
+(SELECT role FROM db_tam.m_role WHERE id_role = ur.id_role LIMIT 1)AS role,
+mu.id_modul,
+(SELECT modul FROM db_tam.m_modul WHERE id_modul = mu.id_modul LIMIT 1)AS modul,
+(SELECT Username FROM customer_db.master_karyawan WHERE nik = ur.nik LIMIT 1) AS username,
+(SELECT Password FROM customer_db.master_karyawan WHERE nik = ur.nik LIMIT 1) AS PASSWORD
+FROM db_tam.modul_user mu
+LEFT JOIN db_tam.user_role_2 ur ON mu.id_user_role = ur.id_user_role
+LEFT JOIN db_tam.user_client uc ON ur.id_client = uc.id_user_client
+LEFT JOIN db_tam.m_role ro ON ur.id_role = ro.id_role
+WHERE db_tam.ur.nik='2010899';
+
+# Admin TAM
+
+# JAKARTA
+
+	1. "1915"	"1910804"	"EKA NURMALA SARI"	"1000000"	"SRU Jakarta"	"4"	"3"	"Admin Cabang"	"1"	"Aplikasi"	"eka.nsa"	"Eka8806"
+
+	2. "116"	"M08005"	"ERNY PURNAMAWATI"	"1000000"	"SRU Jakarta"	"15"	"3"	"Admin Cabang"	"1"	"Aplikasi"	"erny.p"	"Erny7498"
+
+	3. "433"	"1210226"	"STEPANUS FERRY MANDHANA"	"1000000"	"SRU Jakarta"	"17"	"1"	"Super Admin"	"1"	"Aplikasi"	"st.ferry.m"	"HS0072"
+
+	4. "1860"	"1810763"	"DESI PUSPITA SARI"	"1000000"	"SRU Jakarta"	"24"	"3"	"Admin Cabang"	"1"	"Aplikasi"	"desi.ps"	"Desi9363"
+
+	5. "1413"	"1610577"	"RESSA RAHMADHANTI"	"1000000"	"SRU Jakarta"	"27"	"1"	"Super Admin"	"1"	"Aplikasi"	"ressa.r"	"Ressa0577"
+
+# SEMARANG 
+
+	1. "1949"	"1930179"	"MIKA MARDIYANA"	"1000003"	"SRU Semarang"	"5"	"3"	"Admin Cabang"	"1"	"Aplikasi"	"mika.m"	"Mika015"
+
+	2. "1398"	"1530134"	"ICHSANTI ADAWIYAH
+"	"1000003"	"SRU Semarang"	"10"	"3"	"Admin Cabang"	"1"	"Aplikasi"	"ichsanti.ad"	"Ichsanti134"
+
+	3. "476"	"1130052"	"MUSBIKHIN"	"1000003"	"SRU Semarang"	"28"	"3"	"Admin Cabang"	"1"	"Aplikasi"	"musbikhin"	"musbikhin6909"
+
+# SURABAYA
+
+	1. "1657"	"1720226"	"MAHARANI FEBRIANA CITRA KHALISHAH"	"1000001"	"SRU Surabaya"	"6"	"3"	"Admin Cabang"	"1"	"Aplikasi"	"maharani.f"
+	"Maharani9999"
+
+	2. "1853"	"1820291"	"FADILAH DIAN ARFIANI"	"1000001"	"SRU Surabaya"	"20"	"3"	"Admin Cabang"	"1"	"Aplikasi"	"fadilah.d"	"Fadilah4290"
+
+	3. "1180"	"1920327"	"NOVI AYU RAHMAWATI"	"1000001"	"SRU Surabaya"	"25"	"3"	"Admin Cabang"	"1"	"Aplikasi"	"novi.ar"	"Novi2121"
+
+	4. "1188"	"1520177"	"UKHTIA AGHNI WIBOWO"	"1000001"	"SRU Surabaya"	"32"	"3"	"Admin Cabang"	"1"	"Aplikasi"	"ukhtia.aw"	"ukhtia.aw1520177"
+
+# BANDUNG
+
+	1. "1220"	"1650135"	"ZARATIARA"	"1000002"	"SRU Bandung"	"7"	"3"	"Admin Cabang"	"1"	"Aplikasi"	"zaratiara.zr"	"zaratiara.zr1650135"
+
+# MAKASSAR
+
+	1. "1881"	"1916049"	"NURWAHYUNI"	"1000007"	"SRU Makassar"	"13"	"3"	"Admin Cabang"	"1"	"Aplikasi"	"nurwahyuni.n"	"Nur9646"
+
+	2. "74"	"1216001"	"ADITYA JOSHUA DJOJO"	"1000007"	"SRU Makassar"	"29"	"3"	"Admin Cabang"	"5"	"Teknisi"	"aditya.j"	"Aditya1212mks"
+
+# LAMPUNG
+
+	1. "1951"	"1910857"	"FARID HIDAYAT"	"1000017"	"SRU Lampung"	"19"	"3"	"Admin Cabang"	"1"	"Aplikasi"	"farid.h"	"Farid2203"
+
+# BALIKPAPAN
+
+	1. "458"	"1240028"	"EVA YULIANA"	"1000004"	"SRU Balikpapan"	"23"	"3"	"Admin Cabang"	"1"	"Aplikasi"	"eva.y"	"Eva7214"
+
+
+"1690"	"28403"	"VF-0045"	"1"	"0"	"0"	"123"
+"1689"	"28397"	"VF-0045"	"1"	"0"	"0"	"123"
+"1688"	"28396"	"VF-0045"	"1"	"0"	"0"	"123"
+
+// lokasi gps
+SELECT
+cus.kode_customer,cus.Nama_customer, wd.login_lat, wd.login_long
+FROM 
+m_customer cus
+JOIN work_order wo ON cus.id_customer = wo.id_rs
+JOIN dashboard_wo_header wh ON wo.id_wo = wh.id_wo
+JOIN dashboard_wo_detail wd ON wh.id_dashboard_wo_header = wd.id_dashboard_wo_header;
+
+
+
+
+
+   # work_order
+
+        SELECT *
+        from work_order 
+        where no_wo='917WO122010' 
+        order by id_wo desc;
+
+   # dashboard_wo_header
+
+        select 
+        *
+        from dashboard_wo_header a inner join work_order b 
+        on a.id_wo = b.id_wo 
+        where b.no_wo='917WO122010'
+        order by a.id_dashboard_wo_header desc;
+
+   # dashboard_wo_detail
+
+        select 
+        *
+        from dashboard_wo_detail a inner join dashboard_wo_header b on a.id_dashboard_wo_header = b.id_dashboard_wo_header 
+        inner join work_order c on b.id_wo = c.id_wo
+        where c.no_wo='917WO122010'
+        order by a.id_dashboard desc;
+
+    # scanheader
+
+        select 
+        *
+        from scanheader a  inner join dashboard_wo_detail b on a.id_dashboard_detail = b.id_dashboard
+        inner join dashboard_wo_header c on b.id_dashboard_wo_header = c.id_dashboard_wo_header
+        inner join work_order d on c.id_wo = d.id_wo 
+        where d.no_wo='917WO122010'
+        order by a.id_dashboard_detail  desc;
+
+    # scan_detail_hd
+
+        select 
+        *
+        from scan_detail_hd_new a inner join scanheader b on a.id_scan_header = b.id_scan_header
+        inner join dashboard_wo_detail c on b.id_dashboard_detail = c.id_dashboard
+        inner join dashboard_wo_header d on c.id_dashboard_wo_header = d.id_dashboard_wo_header
+        inner join work_order e on d.id_wo = e.id_wo 
+        where e.no_wo='917WO122010'
+        order by a.Id_scan_hd desc;
+
+    # scan_detail_ro
+
+        select 
+        *
+        from scan_detail_ro_new a inner join scanheader b on a.id_scan_header = b.id_scan_header
+        inner join dashboard_wo_detail c on b.id_dashboard_detail = c.id_dashboard
+        inner join dashboard_wo_header d on c.id_dashboard_wo_header = d.id_dashboard_wo_header
+        inner join work_order e on d.id_wo = e.id_wo 
+        where e.no_wo='917WO122010'
+        order by a.Id_scan_ro desc;
+
+    # scan_detail_re
+
+        select 
+        *
+        from scan_detail_re_new a inner join scanheader b on a.id_scan_header = b.id_scan_header
+        inner join dashboard_wo_detail c on b.id_dashboard_detail = c.id_dashboard
+        inner join dashboard_wo_header d on c.id_dashboard_wo_header = d.id_dashboard_wo_header
+        inner join work_order e on d.id_wo = e.id_wo 
+        where e.no_wo='917WO122010'
+        order by a.Id_scan_re desc;
+
+    # scan_detail_sparepart
+
+        select 
+        *
+        from scan_detail_sparepart a inner join scanheader b on a.id_scan_header = b.id_scan_header
+        inner join dashboard_wo_detail c on b.id_dashboard_detail = c.id_dashboard
+        inner join dashboard_wo_header d on c.id_dashboard_wo_header = d.id_dashboard_wo_header
+        inner join work_order e on d.id_wo = e.id_wo 
+        where e.no_wo='917WO122010'
+        order by a.id_scan_detail_sparepart desc;
+
+    # scan_detail_error
+
+        select 
+        *
+        from scan_detail_error a inner join scanheader b on a.id_scan_header = b.id_scan_header
+        inner join dashboard_wo_detail c on b.id_dashboard_detail = c.id_dashboard
+        inner join dashboard_wo_header d on c.id_dashboard_wo_header = d.id_dashboard_wo_header
+        inner join work_order e on d.id_wo = e.id_wo 
+        where e.no_wo='917WO122010'
+        order by a.id_scan_detail_error desc;
+
+
+    # scan_detail_perbaikan
+
+        select 
+        *
+        from scan_detail_perbaikan a inner join scanheader b on a.id_scan_header = b.id_scan_header
+        inner join dashboard_wo_detail c on b.id_dashboard_detail = c.id_dashboard
+        inner join dashboard_wo_header d on c.id_dashboard_wo_header = d.id_dashboard_wo_header
+        inner join work_order e on d.id_wo = e.id_wo 
+        where e.no_wo='917WO122010'
+        order by a.id_scan_perbaikan desc;
+
+    # scan_detail_supervisi
+
+        select 
+        *
+        from scan_detail_supervisi b 
+        inner join dashboard_wo_detail c on b.id_dashboard_detail= c.id_dashboard
+        inner join dashboard_wo_header d on c.id_dashboard_wo_header = d.id_dashboard_wo_header
+        inner join work_order e on d.id_wo = e.id_wo 
+        where e.no_wo='917WO122010'
+        order by b.id_scan_supervisi desc;
+
+    # scan_detail_supporting
+
+        select 
+        *
+        from scan_detail_supporting a 
+        inner join scanheader b on a.id_scan_header = b.id_scan_header
+        inner join dashboard_wo_detail c on b.id_dashboard_detail = c.id_dashboard
+        inner join dashboard_wo_header d on c.id_dashboard_wo_header = d.id_dashboard_wo_header
+        inner join work_order e on d.id_wo = e.id_wo 
+        where e.no_wo='917WO122010'
+        order by a.id_scan_supporting desc;
+
+    # scan_detail_pshd
+
+        select 
+        *
+        from scan_detail_pshd a 
+        inner join scanheader b on a.id_scan_header = b.id_scan_header
+        inner join dashboard_wo_detail c on b.id_dashboard_detail = c.id_dashboard
+        inner join dashboard_wo_header d on c.id_dashboard_wo_header = d.id_dashboard_wo_header
+        inner join work_order e on d.id_wo = e.id_wo 
+        where e.no_wo='917WO122010'
+        order by a.Id_scan_pshd desc;
+
+    # scan_detail_psro
+
+        select 
+        *
+        from scan_detail_psro a 
+        inner join scanheader b on a.id_scan_header = b.id_scan_header
+        inner join dashboard_wo_detail c on b.id_dashboard_detail = c.id_dashboard
+        inner join dashboard_wo_header d on c.id_dashboard_wo_header = d.id_dashboard_wo_header
+        inner join work_order e on d.id_wo = e.id_wo 
+        where e.no_wo='917WO122010'
+        order by a.Id_scan_psro desc;
+
+    # scan_detail_psre
+
+        select 
+        *
+        from scan_detail_psre a 
+        inner join scanheader b on a.id_scan_header = b.id_scan_header
+        inner join dashboard_wo_detail c on b.id_dashboard_detail = c.id_dashboard
+        inner join dashboard_wo_header d on c.id_dashboard_wo_header = d.id_dashboard_wo_header
+        inner join work_order e on d.id_wo = e.id_wo 
+        where e.no_wo='917WO122010'
+        order by a.Id_scan_psre desc;
+
+Marshal3115
+
+Karyawan Keluar
+1910780 Irsan Elias
+2010900 Kartono Tjie
+
+
+work order :
+1. pak irfan : rs zahira (done) perbaikan
+2. pak sukani : rsi karawabg (done)
+3. pak Aprianto : rs polri (done) x
+4.  pak rohyu : rs sentra medikabcibinong (done)
+5.  pak angga : rs harbun (done)
+6. pak febri : RSI karawang (done)
+7. pak ramdan : rs setia mitra (done) perbaikan
+8. pak Ade : RSPAD (done)
+terima kasig
+
+
+
+

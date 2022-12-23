@@ -1,0 +1,148 @@
+
+function getC ($awal, $akhir) {
+	$conn=odbc_connect('sqlsrv64','mis','ASD123');
+	if (!$conn){exit("Connection Failed: " . $conn);}
+	
+	$ar = 'dbo.[PT_ SINAR RODA UTAMA$Transfer Shipment Header]';
+	$br = 'dbo.[PT_ SINAR RODA UTAMA$Transfer Header]';
+	$cr = 'dbo.[PT_ SINAR RODA UTAMA$Transfer Shipment Line]';
+	$dr = 'dbo.[PT_ SINAR RODA UTAMA$Item Ledger Entry]';
+	$er = 'dbo.[PT_ SINAR RODA UTAMA$Dimension Set Entry]';
+	$fr = 'dbo.[PT_ SINAR RODA UTAMA$Default Dimension]';
+	$gr = 'dbo.[PT_ SINAR RODA UTAMA$Transfer Receipt Line]';
+	
+	$aar = 'dbo.[PT_ SINAR RODA UTAMA$Sales Shipment Line]';
+	$bbr = 'dbo.[PT_ SINAR RODA UTAMA$Sales Shipment Header]';
+	$ccr = 'dbo.[PT_ SINAR RODA UTAMA$Dimension Set Entry]';
+	$ddr = 'dbo.[PT_ SINAR RODA UTAMA$Sales Invoice Line]';
+	$eer = 'dbo.[PT_ SINAR RODA UTAMA$Sales Cr_Memo Header]';
+
+	$c = "SELECT *
+
+				FROM 
+
+				(
+				SELECT 
+				br.No_,
+				ar.[Transfer Order No_] AS no_to,
+				CASE
+					WHEN ar.[Transaction Specification] = 'HD.001' THEN 'Penambahan'
+					WHEN ar.[Transaction Specification] = 'HD.002' THEN 'Penggantian'
+					WHEN ar.[Transaction Specification] = 'HD.003' THEN 'Pemenuhan KSO'
+					WHEN ar.[Transaction Specification] = 'HD.004' THEN 'Mutasi mesin'
+					WHEN ar.[Transaction Specification] = 'HD.005' THEN 'Peminjaman Mesin'
+					WHEN ar.[Transaction Specification] = 'HD.006' THEN 'Penarikan'
+					WHEN ar.[Transaction Specification] = 'HD.007' THEN 'Retur Pengiriman Mesin'
+					WHEN ar.[Transaction Specification] = 'HD.008' THEN 'Pemusnahan'
+				END AS status,
+				ar.No_ AS no_shipment, gr.[Document No_] AS no_receipt, ar.[Transfer-from Code] AS loc_from,ar.[Transfer-from Name] AS loc_from_name, 
+				ar.[Transfer-to Code] AS loc_to, ar.[Transfer-to Name] AS to_name, ar.[Transfer Order Date] AS tgl_order,
+				ar.[Shipment Date] AS tgl_kirim,cr.[Item No_] AS item, -dr.Quantity AS qty, 
+				cr.[Transfer-from Bin Code] AS from_bin, 
+				iif(ar.[Transfer-to Code] LIKE '%ADP%' OR cr.[Transfer-from Code] LIKE '%ADP%',dr.[Quantity],-dr.[Quantity]) AS qty2, 
+				dr.[Serial No_] AS serno, 
+				er.[Dimension Value Code] AS rm
+
+				FROM 
+				$ar as ar 
+				FULL JOIN 
+				$br AS br
+				ON ar.[Transfer Order No_] = br.No_
+				LEFT JOIN 
+				$cr AS cr
+				ON cr.[Document No_] = ar.No_
+				LEFT JOIN 
+				$dr AS dr
+				ON dr.[Document No_] = cr.[Document No_] and dr.[Location Code] = ar.[Transfer-from Code] and dr.[Item No_] = cr.[Item No_]
+				AND dr.[Order Line No_] = cr.[Line No_]
+				LEFT JOIN
+				(SELECT * FROM
+				$er
+				WHERE [Dimension Code] = 'SALES-RM'
+				) AS er
+				ON er.[Dimension Set ID] = ar.[Dimension Set ID]
+				
+				LEFT JOIN (SELECT * FROM $fr
+				 ) AS fr
+				ON fr.No_ = cr.[Item No_] 
+				
+				LEFT JOIN (SELECT * FROM $gr) AS gr
+				ON ar.[Transfer Order No_] = gr.[Transfer Order No_]
+
+
+				WHERE 
+				cr.[Inventory Posting Group] = 'ADP-MESIN'
+				AND 				
+				(ar.[Transfer-to Code] LIKE '%ADP%' OR cr.[Transfer-from Code] LIKE '%ADP%')
+				AND
+				ar.[Posting Date] BETWEEN '$awal' AND '$akhir'
+				AND fr.No_ IS NOT NULL 
+				
+				
+				UNION ALL
+
+
+				SELECT 
+				aar.[Order No_] AS No_, aar.[Order No_] AS no_to, 'Sales Order' AS status, aar.[Document No_] AS no_shipment, gr.[Document No_] AS no_receipt,
+				aar.[Location Code] AS loc_from, aar.[Location Code] AS loc_from_name, aar.[Sell-to Customer No_] AS loc_to,
+				bbr.[Sell-to Customer Name] AS to_name, bbr.[Order Date] AS tgl_order, aar.[Posting Date] AS tgl_kirim, aar.No_ AS item,
+				aar.Quantity AS qty, aar.[Bin Code] AS from_bin, aar.Quantity AS qty2,
+				(select [Serial No_] from $dr
+				where [Document No_] = aar.[Document No_] and [Document Line No_] = aar.[Line No_]) AS serno,
+				ccr.[Dimension Value Code] AS rm
+
+				FROM
+				$aar aar 
+				LEFT JOIN 
+				$bbr bbr ON
+				bbr.No_ = aar.[Document No_]
+				LEFT JOIN 
+				(SELECT * FROM $ccr
+				WHERE [Dimension Code] = 'SALES-RM') ccr
+				ON ccr.[Dimension Set ID] = bbr.[Dimension Set ID]
+				LEFT JOIN 
+				(SELECT DISTINCT [Document No_], [Shipment No_] 
+				FROM $ddr)ddr
+				ON ddr.[Shipment No_]  = aar.[Document No_]
+				LEFT JOIN 
+				$eer eer
+				ON eer.[Applies-to Doc_ No_] = ddr.[Document No_]
+				
+				LEFT JOIN $gr gr
+				ON aar.[Document No_] = gr.[Transfer Order No_]
+
+				WHERE aar.[Gen_ Prod_ Posting Group] = 'B-ADP-MSN'
+				AND aar.Correction = 0 AND aar.[Customer Price Group] = 'SP-REG'
+				AND aar.No_ NOT LIKE '%AXEON%'
+				AND eer.No_ IS NOT NULL 
+				AND aar.[Posting Date] BETWEEN '$awal' AND '$akhir'
+				
+				
+
+				) tbl
+				
+				WHERE tbl.status = 'Penambahan' AND tbl.loc_from LIKE '%JKT%' 
+				AND no_receipt LIKE '%PTR%'
+				
+				ORDER BY tbl.tgl_kirim ASC
+				
+				";
+			$jml = 0;
+			$rs=odbc_exec($conn,$c);
+		//print_r($a);
+			if (!$rs){
+			exit("Error in SQL");
+			}else{
+				$n= 0;
+				$sb = 0;
+				while (odbc_fetch_row($rs)){
+				$n++;
+				$qty=odbc_result($rs,"qty");
+				$jml = $jml + $qty;
+	
+				}
+		}
+	return $jml;
+	
+
+}

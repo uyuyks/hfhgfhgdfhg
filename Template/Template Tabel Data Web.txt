@@ -1,0 +1,108 @@
+<table style="border: 1px solid black; height: 595px;" width="785">
+<tbody>
+<tr style="height: 56px;">
+<td style="background-color: #0d6efd; border: 1px solid black; height: 56px; width: 776.354px; text-align: center;" colspan="3">
+<h3 style="color: white;"><strong>Produk Range</strong></h3>
+</td>
+</tr>
+<tr style="height: 46px;">
+<td style="border: 1px solid black; padding: 5px; height: 46px; width: 131.962px;">
+<p><strong>Kode Barang</strong></p>
+</td>
+<td style="border: 1px solid black; padding: 5px; height: 46px; width: 422.5px;">
+<p><strong>Kategori Produk</strong></p>
+</td>
+<td style="border: 1px solid black; padding: 5px; height: 46px; width: 187.205px;">
+<p><strong>Kemasan Sterilisasi</strong></p>
+</td>
+</tr>
+<tr style="height: 46px;">
+<td style="border: 1px solid black; padding: 5px; height: 46px; width: 131.962px;">
+<p>DS01T2613R-N</p>
+</td>
+<td style="border: 1px solid black; padding: 5px; height: 46px; width: 422.5px;">
+<p>1 mL Luer Slip Tuberculin With Needle 26G x 1/2&rdquo;</p>
+</td>
+<td style="border: 1px solid black; padding: 5px; height: 46px; width: 187.205px;">
+<p>100pcs/box/E-Beam</p>
+</td>
+</tr>
+<tr style="height: 46px;">
+<td style="border: 1px solid black; padding: 5px; height: 46px; width: 131.962px;">
+<p>DS03L2332R-N</p>
+</td>
+<td style="border: 1px solid black; padding: 5px; height: 46px; width: 422.5px;">
+<p>3 mL Luer Lock With Needle 23G x 1-1/4&rdquo;</p>
+</td>
+<td style="border: 1px solid black; padding: 5px; height: 46px; width: 187.205px;">
+<p>100pcs/box/E-Beam</p>
+</td>
+</tr>
+<tr style="height: 46px;">
+<td style="border: 1px solid black; padding: 5px; height: 46px; width: 131.962px;">
+<p>DS03L2425R-N</p>
+</td>
+<td style="border: 1px solid black; padding: 5px; height: 46px; width: 422.5px;">
+<p>3 mL Luer Lock With Needle 24G x 1&rdquo;</p>
+</td>
+<td style="border: 1px solid black; padding: 5px; height: 46px; width: 187.205px;">
+<p>100pcs/box/E-Beam</p>
+</td>
+</tr>
+<tr style="height: 46px;">
+<td style="border: 1px solid black; padding: 5px; height: 46px; width: 131.962px;">
+<p>DS05L2238R-N</p>
+</td>
+<td style="border: 1px solid black; padding: 5px; height: 46px; width: 422.5px;">
+<p>5 mL Luer Lock With Needle 22G x 1-1/2&rdquo;</p>
+</td>
+<td style="border: 1px solid black; padding: 5px; height: 46px; width: 187.205px;">
+<p>100pcs/box/E-Beam</p>
+</td>
+</tr>
+<tr style="height: 46px;">
+<td style="border: 1px solid black; padding: 5px; height: 46px; width: 131.962px;">
+<p>DS10L2138R-N</p>
+</td>
+<td style="border: 1px solid black; padding: 5px; height: 46px; width: 422.5px;">
+<p>10 mL Luer Lock With Needle 21G x 1-1/2&rdquo;</p>
+</td>
+<td style="border: 1px solid black; padding: 5px; height: 46px; width: 187.205px;">
+<p>100pcs/box/E-Beam</p>
+</td>
+</tr>
+<tr style="height: 46px;">
+<td style="border: 1px solid black; padding: 5px; height: 46px; width: 131.962px;">
+<p>DS20LSR-N</p>
+</td>
+<td style="border: 1px solid black; padding: 5px; height: 46px; width: 422.5px;">
+<p>20 mL Luer Slip Without Needle</p>
+</td>
+<td style="border: 1px solid black; padding: 5px; height: 46px; width: 187.205px;">
+<p>50pcs/box/E-Beam</p>
+</td>
+</tr>
+<tr style="height: 46px;">
+<td style="border: 1px solid black; padding: 5px; height: 46px; width: 131.962px;">
+<p>DS50LSR-N</p>
+</td>
+<td style="border: 1px solid black; padding: 5px; height: 46px; width: 422.5px;">
+<p>50 mL Luer Slip Without Needle</p>
+</td>
+<td style="border: 1px solid black; padding: 5px; height: 46px; width: 187.205px;">
+<p>50pcs/box/E-Beam</p>
+</td>
+</tr>
+<tr style="height: 46px;">
+<td style="border: 1px solid black; padding: 5px; height: 46px; width: 131.962px;">
+<p>DS50CT</p>
+</td>
+<td style="border: 1px solid black; padding: 5px; height: 46px; width: 422.5px;">
+<p>50 mL Catheter Tip</p>
+</td>
+<td style="border: 1px solid black; padding: 5px; height: 46px; width: 187.205px;">
+<p>40pcs/box/ETO</p>
+</td>
+</tr>
+</tbody>
+</table>

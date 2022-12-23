@@ -1,0 +1,271 @@
+<?php
+
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
+use kartik\select2\Select2;
+use yii\helpers\Url;
+use yii\bootstrap\Modal;
+use miloschuman\highcharts\Highcharts;
+use yii\web\JsExpression;
+
+$connection = \Yii::$app->db;
+$auth_id    = Yii::$app->user->identity->id;
+
+$js = <<<js
+	$('#mytable').DataTable({
+    'paging'      : true,
+    'lengthChange': true,
+    'searching'   : true,
+    'ordering'    : true,
+    'info'        : true,
+    'autoWidth'   : true,
+    "lengthMenu": [ [100,10, 25, 50, 100, 500, 100, -1],[100,10, 25, 50, 100, 500, 1000, "All"] ],
+  });
+
+  $(document).ready(function () {
+		$('.selectpicker').selectpicker();
+		var count = 1; 
+		add_dynamic_input_field(count);
+
+		function add_dynamic_input_field(count){
+			var button = '';
+			if(count > 1){
+				button = '<button type="button" name"karyawan-remove" id="'+count+'" class="btn btn-danger btn-sm karyawan-remove"><span class="glyphicon glyphicon-minus"></span></button>';
+			}else{
+				button = '<button type="button" name"karyawan_more" id="karyawan_more" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-plus"></span></button>';
+			}
+			
+			output = '<div class="row" id="karyawan'+count+'">';
+			output += `
+			
+			<div class="col-md-1">
+			<div class="form-group">
+				<input type="text" name="aspek_cdakb[]" class="form-control" placeholder="Jabatan">		
+			</div>
+			</div>
+			
+			<div class="col-md-1">
+			<div class="form-group">
+				<input type="text" name="kategori[]" class="form-control" placeholder="Jabatan" >		
+			</div>
+			</div>
+			
+			<div class="col-md-1">
+			<div class="form-group">
+				<input type="text" name="aspek_penelitian[]" class="form-control" placeholder="Jabatan" >		
+			</div>
+			</div>
+			
+			<div class="col-md-2">
+			<div class="form-group">
+				<input type="text" name="penjelasan_aspek[]" class="form-control" placeholder="Jabatan" >		
+			</div>
+			</div>
+			
+			<div class="col-md-1">
+			<div class="form-group">
+				<input type="text" name="bobot[]" class="form-control" placeholder="Jabatan" >		
+			</div>
+			</div>
+								
+			<div class="col-md-1">
+			<div class="form-group">
+				<input type="text" name="nilai[]" class="form-control" placeholder="Jabatan" >		
+			</div>
+			</div>
+			
+			<div class="col-md-2">
+			<div class="form-group">
+				<input type="text" name="penjelasan_penilaian[]" class="form-control" placeholder="Jabatan" >		
+			</div>
+			</div>
+			
+			<div class="col-md-1">
+			<div class="form-group">
+				<input type="text" name="action_plan[]" class="form-control" placeholder="Jabatan" >		
+			</div>
+			</div>
+			
+			<div class="col-md-1">
+			<div class="form-group">
+				<input type="text" name="due_date[]" class="form-control" placeholder="Jabatan" >		
+			</div>
+			</div>      
+			`;
+			output += '<div class="col-md-1" style="margin-top:0px;">'+button+'</div></div>';
+			$('#dynamic_field').append(output);
+			$(".selectpicker").selectpicker('refresh');
+		}
+
+		$(document).on('click','#karyawan_more', function(){
+			count = count + 1;
+			add_dynamic_input_field(count);
+		});
+
+		$(document).on('click','.karyawan-remove', function(){
+			var row_id = $(this).attr("id");
+			$('#karyawan'+row_id).remove();
+		});
+  });
+js;
+$this->registerJs($js);
+?>
+
+<div class="box-header with-border">
+<label><pre>Nama Gudang    : <?=$gudang?></label> 
+</div>
+<div class="box-header with-border">
+<label><pre>Nomer Periode  : <?=$modelheader->periode->nomer_periode?></label>
+</div>
+<div class="box-header with-border">
+<label><pre>Area         : <?=$modelheader['id_cabang']==1?'Cabang':'Pusat'?></label>
+</div>
+<br><br>
+<?php $form = ActiveForm::begin() ?>
+<?php $modelheader->id_cdakb_header ?>
+<label>CEKLIS MONITORING CDAKB GUDANG CABANG</label><br>
+
+<div class="row" id="karyawan'+count+'">
+			<div class="col-md-1">
+			<div class="form-group">
+				<label>no</label>		
+			</div>
+			</div>
+
+			<div class="col-md-1">
+			<div class="form-group">
+				<label>aspek_cdakb</label>		
+			</div>
+			</div>
+			
+			<div class="col-md-1">
+			<div class="form-group">
+				<label>kategori</label>		
+			</div>
+			</div>
+			
+			<div class="col-md-1">
+			<div class="form-group">
+				<label>aspek_penelitian</label>
+			</div>
+			</div>
+			
+			<div class="col-md-2">
+			<div class="form-group">
+				<label>penjelasan_aspek</label>		
+			</div>
+			</div>
+			
+			<div class="col-md-1">
+			<div class="form-group">
+				<label>bobot</label>		
+			</div>
+			</div>
+								
+			<div class="col-md-1">
+			<div class="form-group">
+				<label>nilai</label>		
+			</div>
+			</div>
+			
+			<div class="col-md-2">
+			<div class="form-group">
+				<label>penjelasan_penilaian</label>		
+			</div>
+			</div>
+			
+			<div class="col-md-1">
+			<div class="form-group">
+				<label>action_plan</label>		
+			</div>
+			</div>
+			
+			<div class="col-md-1">
+			<div class="form-group">
+				<label>due_date</label>		
+			</div>
+			</div>   
+			<div class="col-md-1" style="margin-top:25px;">
+			</div>
+			</div>
+<?php 
+$no=1;
+foreach ($modeldetail as $row){?>
+           <div class="row" id="karyawan'+count+'">
+		   <div class="col-md-1">
+			<div class="form-group">
+				<input type="text" readonly name="nomer[]" class="form-control" value="<?=$no?>">		
+			</div>
+			</div>
+			<div class="col-md-1">
+			<div class="form-group">
+				<input type="text" readonly name="aspek_cdakb[]" class="form-control" value="<?= $row['aspek_cdakb']?>">		
+			</div>
+			</div>
+			
+			<div class="col-md-1">
+			<div class="form-group">
+				<input type="text" readonly name="kategori[]" class="form-control" value="<?= $row['kategori']?>" >		
+			</div>
+			</div>
+			
+			<div class="col-md-1">
+			<div class="form-group">
+				<input type="text"  readonly name="aspek_penelitian[]" class="form-control" value="<?= $row['aspek_penelitian']?>" >
+			</div>
+			</div>
+			
+			<div class="col-md-2">
+			<div class="form-group">
+				<input type="text" readonly name="penjelasan_aspek[]" class="form-control" value="<?= $row['penjelasan_aspek']?>" >		
+			</div>
+			</div>
+			
+			<div class="col-md-1">
+			<div class="form-group">
+				<input type="text" readonly name="bobot[]" class="form-control" value="<?= $row['bobot']?>" >		
+			</div>
+			</div>
+								
+			<div class="col-md-1">
+			<div class="form-group">
+				<input type="text"  required name="nilai[]" class="form-control" value="<?= $row['nilai']?>" placeholder="Nilai" >		
+			</div>
+			</div>
+			
+			<div class="col-md-2">
+			<div class="form-group">
+				<input type="text" required name="penjelasan_penilaian[]" class="form-control" value="<?= $row['penjelasan_penilaian']?>" placeholder="Penjelasan" >		
+			</div>
+			</div>
+			
+			<div class="col-md-1">
+			<div class="form-group">
+				<input type="text"  required name="action_plan[]" class="form-control" value="<?= $row['action_plan']?>" placeholder="Action Plan" >		
+			</div>
+			</div>
+			
+			<div class="col-md-1">
+			<div class="form-group">
+				<input type="date" required  name="due_date[]" class="form-control" value="<?= $row['due_date']?>" placeholder="Due Date" >		
+			</div>
+			</div>   
+			<div class="col-md-1" style="margin-top:25px;">
+			</div>
+			</div>
+<?php $no++; } ?>
+<!--div id="dynamic_field"></div-->  
+
+    
+<?= Html::submitButton('Save', ['class' =>  'btn btn-primary','onclick' => 'validate']) ?>
+    
+
+</div>
+<?php ActiveForm::end(); ?>	
+<style>
+pre{
+	height : 45px;
+	width: 1450px;
+	font-size: 15px;
+}
+</style>

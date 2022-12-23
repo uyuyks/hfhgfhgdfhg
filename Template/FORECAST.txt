@@ -1,0 +1,33 @@
+SELECT 
+	(SELECT TOP 1 [Posting Date] 
+	FROM dbo."PT_ SINAR RODA UTAMA$Item Ledger Entry"
+	WHERE 
+	[Item No_] LIKE '%SURDIAL%'
+	AND [Location Code] IN ('JKT-JP12','JKT-JP28') 
+	AND [Posting Date] < '2022-01-01'
+	AND [Serial No_] = tb.serno
+	AND [Invoiced Quantity] >0
+	ORDER BY [Posting Date] desc)AS tgl,
+	
+	(SELECT TOP 1 [Location Code] 
+	FROM dbo."PT_ SINAR RODA UTAMA$Item Ledger Entry"
+	WHERE 
+	[Item No_] LIKE '%SURDIAL%'
+	AND [Location Code] IN ('JKT-JP12','JKT-JP28') 
+	AND [Posting Date] < '2022-01-01'
+	AND [Serial No_] = tb.serno
+	AND [Invoiced Quantity] >0
+	ORDER BY [Posting Date] desc)AS namagudang,
+	
+serno,qty 
+FROM (
+SELECT tbl.serno,  SUM (tbl.qty) AS qty FROM
+(SELECT [Item No_] AS no, [Location Code] AS nama_gudang, [Serial No_] AS serno,
+[Posting Date] AS datee, [Invoiced Quantity] AS qty
+FROM dbo."PT_ SINAR RODA UTAMA$Item Ledger Entry"
+WHERE 
+[Item No_] LIKE '%SURDIAL%'
+AND [Location Code] IN ('JKT-JP12','JKT-JP28') 
+AND [Posting Date] < '2022-01-01') AS tbl
+GROUP BY tbl.serno, tbl.no)AS tb
+WHERE tb.qty>0

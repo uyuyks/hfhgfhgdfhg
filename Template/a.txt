@@ -1,0 +1,97 @@
+<div class="box box-solid box-primary">
+	<div class="box-header with-border">
+	   
+	 <h3 class="box-title">Filter</h3>
+	 <div class="box-tools pull-right">
+		<button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+	 </div>
+	  
+	</div>
+	
+	<div class="box-body">
+
+		  <?php $form = ActiveForm::begin(); ?>
+		  <table>
+			<tr>
+			  <td width="100">Filter Laporan</td>
+			  <td width="300">
+				<?php
+				    
+/* 					$list2 = $deps;
+					$jmlchar = strlen($deps);
+					$list = substr($list2,0,$jmlchar);
+					$str_arr4 = explode (",", $list);
+					//var_dump($str_arr4);
+
+ 						echo Select2::widget([
+							'name' => 'id_gudang',
+							'value' => $str_arr4,
+							'data' => getListDepartemen(),
+							'options' => [
+								'placeholder' => 'Department',
+								'multiple' => true
+							],
+						]);  */
+				?>	  
+  
+			  </td>
+			  <td width="20"></td>
+			  <td width="100">start</td>
+			  <td width="300">
+				<?php
+					echo DatePicker::widget([
+						'name' => 'awal',
+						'value' => $awal,
+						'type' => DatePicker::TYPE_COMPONENT_PREPEND,
+						'pluginOptions' => [
+							'autoclose'=>true,
+							'format' => 'yyyy-mm-dd'
+						]
+					]);
+				?> 
+			  </td>
+			</tr>
+			<tr>
+			  <td width="100"></td>
+			  <td width="300">
+
+			  </td>
+			  <td width="20"></td>
+			  <td width="100">end</td>
+			  <td width="300">
+				<?php
+					echo DatePicker::widget([
+						'name' => 'akhir',
+						'value' => $akhir,
+						'type' => DatePicker::TYPE_COMPONENT_PREPEND,
+						'pluginOptions' => [
+							'autoclose'=>true,
+							'format' => 'yyyy-mm-dd'
+						]
+					]);
+				?>  
+			  </td>
+			</tr>
+			
+			<tr>
+			  <td width="100"></td>
+			  <td width="300">
+				 <br>
+				 <?= Html::submitButton('Filter', ['class' => 'btn btn-success','name'=>'tombol','value'=>'filter']); ?>	
+				 <?= Html::submitButton('Excel', ['class' => 'btn btn-primary','name'=>'tombol','value'=>'exportexcel']); ?>
+			  </td>
+			  <td width="20"></td>
+			  <td width="100"></td>
+			  <td width="300">
+			  </td>
+			</tr>
+			
+			
+
+
+		  </table>
+		  <?php ActiveForm::end(); ?>
+
+	</div>
+	
+</div>				

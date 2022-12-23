@@ -1,0 +1,65 @@
+iso 2015:9001
+
+update juni iso 201613485
+
+iso salah satu standar international dimana dijadikan dalam pedoman dalam menjalani kegiatan rutin dalam organisasi
+apa aja sih?
+1. auditor orang yg meng audit
+2. audity kita yg di audit
+
+dilakukan secara resmi setelah pemberitahuan, tidak dadakan ( kalo dadakan sidak )
+
+MIS ada 3 Fungsi : 
+1.Support
+2.Techincal
+3.Learning
+
+Context of the organization
+Dokumen Dokumen ISO yang ada di MIS
+1. SMM (Sistem Management Mutu) sistem yang berkaitan dengan mutu kinerja kita
+Maaping Cross Function : relasi antara satu bisnis proses dengan bisnis proses lainnya
+MCF : sudah mengalami 2 kali revisi
+
+
+2. Seluruh SOP yang dimiliki harus direvisi sesuai ketentuan ISO 9001:2015
+harus termuat PDCA (Plan Do Check Action) satu SOP itu dijelaskan oleh Work Instruction gimana cara kerjanya
+untuk realisasi dibutuhkan satu formulir
+
+3. Dalam satu SOP ada flow proses adalah alur secara umum, dan dijelaskan dengan secara terperinci
+proses kerja detail dari flow proses yang sudah ada 
+
+4. Dalam satu SOP harus digambarkan prosesnya apa, identifikasi risiko, analisa dan pembelajarannya
+
+Leadership and Training
+5. Manager departemen wajib memiliki komitmen minimal harus bisa dibuktikan kalau project tersebut dijalankan 
+
+6. Service Excellent, dituntut untuk melakukan support dan service customer dengan memberikan pelayanan yang baik kepada customer, intinya membantu grow perusahaan
+
+7. Semua Karyawan wajib memiliki dan harus tau jobdesc atau format jobdesc sesuai dengan ketentuan standar ISO 9001:2015 
+
+8. Biasanya berhubungan dengan RTM 
+
+9. Bukti dan monitoring kerjanya, harus dibuktikan dengan kertas kerjanya
+
+10. harus diidentifikasi resiko resiko yang akan terjadi
+
+11. mengisi daftar inventarisasi dan improvement yang terjadi di departemen MIS 
+
+Support 
+12. Semua peralatan peralatan yang tidak habis pakai harus didaftarkan
+
+13. bukti evaluasi karyawan setiap semester
+
+Management Knowledge
+14. semua catatan dalam induk 
+
+15. sistem komunikasi kita punya grup mis
+
+16.harus mengikuti pelatihan terkait pemahaman SMM, manajemen risiko dan leadership
+
+17. SOP harus dipahami oleh semua orang
+
+18. minimal ada RKA, misal mau support di bulan april, rencananya harus ada
+
+
+ <?= Html::submitButton('Excel', ['class' => 'btn btn-primary','name'=>'tombol','value'=>'exportexcel']); ?>

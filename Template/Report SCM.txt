@@ -1,0 +1,16 @@
+A = item ledger entries
+B = item ledger entries
+C = input manual
+D = penjumlahan
+E = input manual
+F = item ledger entries
+G =  input manual
+H = item ledger entries
+J, K, L ini sepertinya formula d coba cek di spek
+
+kolom F: sum invoiced_quantity 
+from item_ledger_entries where document type = Purchase Receipt dan Location Code = Import
+
+kolom H: sum invoiced_quantity 
+from item_ledger_entries where document type = Purchase Receipt dan Location Code <> Import
+

@@ -1,0 +1,62 @@
+CONTROLLER
+$model->berkas_npwp = UploadedFile::getInstances($model, 'berkas_npwp');
+			if (!file_exists('file/NPWP/')) {
+				mkdir('file/NPWP/', 0777, true);
+			}
+			foreach ($model->berkas_npwp as $file) {
+					
+                $file->saveAs('file/NPWP/'. $file->baseName .$model->id_customer. '.' . $file->extension);
+				Yii::$app->db5->createCommand()
+				->update('f_customer', [
+				'npwp' => $file->baseName .$model->id_customer. '.' . $file->extension,//file dr database
+				],"id_customer =$model2->id_customer")->execute();
+            }
+				if (!file_exists('file/NPWP/')) {
+				mkdir('file/NPWP/', 0777, true);
+			}
+
+CREATE
+  <tr>
+    <td>Upload NPWP</td>
+    <td>
+	<?php echo '<label class="control-label">Upload NPWP</label>';
+	echo FileInput::widget([
+		'model' => $model,
+		'value' => $model->npwp?$model->npwp:'',
+		'attribute' => 'berkas_npwp[]',
+		'options' => ['multiple' => true,'required'=>$model->npwp==null?'':false],
+		'pluginOptions' => [
+            'initialPreview'=>[
+				Html::a( $model->npwp, '@web/file/NPWP/'.$model->npwp )
+            ],
+            'overwriteInitial'=>false
+        ]
+	]);
+	?>
+	</td>
+  </tr>
+</table>
+ 
+CONTROLLER
+$model->berkas_npwp = UploadedFile::getInstances($model, 'berkas_npwp');
+			if (!file_exists('file/NPWP/')) {
+				mkdir('file/NPWP/', 0777, true);
+			}
+			foreach ($model->berkas_npwp as $file) {
+					
+                $file->saveAs('file/NPWP/'. $file->baseName .$model->id_customer. '.' . $file->extension);
+				Yii::$app->db5->createCommand()
+				->update('f_customer', [
+				'npwp' => $file->baseName .$model->id_customer. '.' . $file->extension,//file dr database
+				],"id_customer =$model2->id_customer")->execute();
+            }
+				if (!file_exists('file/NPWP/')) {
+				mkdir('file/NPWP/', 0777, true);
+			}
+
+VIEW
+['attribute'=>'npwp',
+			 'content'=>function($data){
+				return Html::a( $data->npwp, '@web/file/NPWP/'.$data->npwp );
+			 }
+			],

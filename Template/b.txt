@@ -1,0 +1,226 @@
+<?php
+use yii\helpers\Url;
+use yii\bootstrap\Modal;
+use yii\helpers\Html;
+use miloschuman\highcharts\Highcharts;
+use yii\web\JsExpression;
+use app\models\Masterkaryawan;
+use app\models\ProposalSign;
+use app\models\ProposalHeader;
+use kartik\select2\Select2;
+use kartik\date\DatePicker;
+use yii\widgets\ActiveForm;
+use yii\helpers\Json;
+use yii\helpers\ArrayHelper;
+
+$connection = \Yii::$app->db;
+$auth_id    = Yii::$app->user->identity->id;
+
+$js = <<<js
+
+	$('#mytable').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+      "lengthMenu": [ [-1, 100,10, 25, 50, 100, 500, 100, -1],["All",100,10, 25, 50, 100, 500, 1000, "All"] ],
+    })
+
+js;
+$this->registerJs($js);
+
+	function getListGudang(){
+		$con = \Yii::$app->db;
+		$query_gudang = "SELECT  
+							a.nama_cabang, a.nama_gudang
+							FROM 
+							db_sirup.cdakb_nama_gudang";			
+		$model_gudang = $con->createCommand($query_gudang)->queryAll();
+		$list_gudang = ArrayHelper::map($model_gudang,'id_gudang',function($model, $defaultValue) {
+					return $model['nama_gudang'];
+				});
+		return $list_gudang;
+	}
+
+function carigudang($gudang,$awal,$akhir)
+{
+
+				$con = \Yii::$app->db;
+				$query= "
+					SELECT  
+						a.nama_cabang, a.nama_gudang
+						FROM 
+						db_sirup.cdakb_nama_gudang";			
+
+				$model = $con->createCommand($query)->queryAll();	
+				
+
+				
+				return $model;
+	
+	
+	
+}	
+
+
+
+					
+//var_dump(getListGudang());					
+?>
+ 
+<div class="box box-solid box-primary">
+	<div class="box-header with-border">
+	   
+	 <h3 class="box-title">Filter</h3>
+	 <div class="box-tools pull-right">
+		<button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+	 </div>
+	  
+	</div>
+	
+	<div class="box-body">
+
+		  <?php $form = ActiveForm::begin(); ?>
+		  <table>
+			<tr>
+			  <td width="100">Gudang</td>
+			  <td width="300">
+				<?php
+				    
+/* 					$list2 = $deps;
+					$jmlchar = strlen($deps);
+					$list = substr($list2,0,$jmlchar);
+					$str_arr4 = explode (",", $list);
+					//var_dump($str_arr4);
+
+ 						echo Select2::widget([
+							'name' => 'id_gudang',
+							'value' => $str_arr4,
+							'data' => getListGudang(),
+							'options' => [
+								'placeholder' => 'Gudang',
+								'multiple' => true
+							],
+						]);  */
+				?>	  
+  
+			  </td>
+			  <td width="20"></td>
+			  <td width="100">start</td>
+			  <td width="300">
+				<?php
+					echo DatePicker::widget([
+						'name' => 'awal',
+						'value' => $awal,
+						'type' => DatePicker::TYPE_COMPONENT_PREPEND,
+						'pluginOptions' => [
+							'autoclose'=>true,
+							'format' => 'yyyy-mm-dd'
+						]
+					]);
+				?> 
+			  </td>
+			</tr>
+			<tr>
+			  <td width="100"></td>
+			  <td width="300">
+
+			  </td>
+			  <td width="20"></td>
+			  <td width="100">end</td>
+			  <td width="300">
+				<?php
+					echo DatePicker::widget([
+						'name' => 'akhir',
+						'value' => $akhir,
+						'type' => DatePicker::TYPE_COMPONENT_PREPEND,
+						'pluginOptions' => [
+							'autoclose'=>true,
+							'format' => 'yyyy-mm-dd'
+						]
+					]);
+				?>  
+			  </td>
+			</tr>
+			
+			
+
+
+		  </table>
+		  <?php ActiveForm::end(); ?>
+
+	</div>
+	
+</div>	
+<div class="box box-solid box-primary">
+<div class="box-header with-border">
+  <h3 class="box-title">Skor CDAKB</h3>
+  <div class="box-tools pull-right">
+	<button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+	
+  </div><!-- /.box-tools -->
+</div><!-- /.box-header -->
+<div class="box-body">
+
+
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-bordered" id="mytable" >
+			<thead>
+				<tr>
+					<th width="5%" >No</th>
+					<th >Periode</th>
+					<th >Nama Cabang</th>
+					<th >Nama gudang</th>			
+				</tr>
+
+			</thead>
+			<tbody>
+			<?php
+				$no=1;$n=0;
+				$con = \Yii::$app->db;
+				$model = carigudang($id_gudang,$awal,$akhir);
+				//var_dump($model);
+				$tmenit=0; $tjam=0; $tmandays=0; $tpersen=0;
+				foreach($model as $row)
+				{	
+				   
+				
+ 				
+			?>
+			
+			<tr>
+				<td align="center"><?php  echo $no; ?></td>
+				<td align="center"><?= $row['nomer_periode']?></td>
+				<td align="center"><?= $row['cabang']?></td>
+				<td align="center"><?= $row['nama_gudang']?></td>
+				</tr>									
+			
+			<?php
+					$no+=1;	
+					$n++;
+					
+					
+			   }
+			   
+			?>
+
+			</tbody>
+            </table>
+        </div>
+		
+ 
+		
+</div><!-- /.box-body -->
+</div><!-- /.box -->
+			
+    <?php 
+        Modal::begin([                 
+                'id'=>'modal',
+                'size'=>'modal-xs',
+				//'clientOptions' => ['backdrop' => 'static', 'keyboard' => false] 
+            ]);
+        echo "<div id='modalContent'></div>";
+        Modal::end();
+    ?>

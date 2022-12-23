@@ -1,0 +1,28 @@
+<tr>
+              <td width="21%" colspan="2" border="none";> </td>
+			  <td width="52%" colspan="6"></td>
+            </tr>
+			
+			
+              	<td width="1%"></td>
+				<td width="20%"></td>
+				<td width="5%"><?=$modeldetail['jawaban_']?></td>
+				<td width="3%"><?=$modeldetail['nilai_']?></td>
+				<td width="12%">
+				<?php
+					if ($modeldetail->action_ <> null){ 
+						$url = '@web/'.$modeldetail->action_;
+						 echo Html::a( '<span class="btn btn-success"><i class="fa fa-download"></i> Download Dokumen</span>', $url,['target'=>'_blank']);
+					} 
+				?> 
+				</td>
+				<td width="15%"><?=$modeldetail['penjelasan_']?></td>
+				<td width="15%"><?=getNama($modeldetail['nama_pic'])?></td>
+				<td width="2%"><?=$modeldetail['due_date_']?></td>
+			</tr>
+
+<tr>
+              <td width="40%" colspan="3">Total Nilai</td>
+				<td width="3%"><?=$modeldetail['nilai_']?></td>
+				<td width="44%" colspan="4">
+            </tr>

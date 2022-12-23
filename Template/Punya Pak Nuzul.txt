@@ -1,0 +1,33 @@
+[8:54 AM, 5/10/2022] SRU NUZUL MIS CABANG: - Master Application :
+http://10.10.20.231:2020/sirup/complaint/application
+
+- Master Category :
+http://10.10.20.231:2020/sirup/complaint/category
+
+- Mapping Category Department :
+http://10.10.20.231:2020/sirup/complaint/category-department
+
+- Master Customer :
+[8:58 AM, 5/10/2022] SRU NUZUL MIS CABANG: - Master Application :
+http://10.10.20.231:2020/sirup/complaint/application
+
+- Master Category :
+http://10.10.20.231:2020/sirup/complaint/category
+
+- Mapping Category Department :
+http://10.10.20.231:2020/sirup/complaint/category-department
+
+- Master Customer :
+http://10.10.20.231:2020/sirup/complaint/customer
+
+- Master Customer Service :
+http://10.10.20.231:2020/sirup/complaint/customer-service 
+
+- New Complaint :
+http://10.10.20.231:2020/sirup/complaint/new-complaint
+
+- Progress Complaint :
+http://10.10.20.231:2020/sirup/complaint/progress-complaint
+
+- Complaint Report :
+http://10.10.20.231:2020/sirup/complaint/report
